@@ -5,7 +5,6 @@ import {
   useCallback,
   useRef,
   useEffect,
-  type FormEvent,
 } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TrendingUp, BarChart2, DollarSign, Globe } from "lucide-react";
@@ -61,7 +60,7 @@ const WELCOME_CARDS = [
 // ---------------------------------------------------------------------------
 // Main Component
 // ---------------------------------------------------------------------------
-export function ChatInterface({ initialSessions, userId }: ChatInterfaceProps) {
+export function ChatInterface({ initialSessions }: ChatInterfaceProps) {
   const [sessions, setSessions] = useState<ChatSession[]>(initialSessions);
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
