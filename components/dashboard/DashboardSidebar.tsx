@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, LogOut, Newspaper, LineChart } from "lucide-react";
+import { Home, LogOut, Newspaper, LineChart, PieChart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import {
@@ -34,6 +34,11 @@ const NAV_ITEMS = [
     label: "Stocks",
     href: "/dashboard/stocks",
     icon: LineChart,
+  },
+  {
+    label: "Mutual Funds",
+    href: "/dashboard/mutual-funds",
+    icon: PieChart,
   },
   {
     label: "News",
