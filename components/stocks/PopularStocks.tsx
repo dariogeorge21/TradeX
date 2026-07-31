@@ -5,9 +5,9 @@ import { ChevronLeft, ChevronRight, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PopularStockCard } from "./PopularStockCard";
-import { fetchPopularStocksData, type PopularStockData } from "@/app/actions/stocks";
+import { fetchPopularStocksData, getTrendingStocks, type PopularStockData, type TrendingStock } from "@/app/actions/stocks";
 
-const KNOWN_STOCKS = [
+const FALLBACK_STOCKS: TrendingStock[] = [
   "AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "TSM",
   "AVGO", "V", "WMT", "JPM", "UNH", "MA", "LLY", "JNJ", "PG", "HD",
   "ORCL", "CVX", "MRK", "KO", "PEP", "BAC", "COST", "MCD", "CRM",
@@ -22,12 +22,27 @@ export function PopularStocks() {
   const [loadingPages, setLoadingPages] = useState<Record<number, boolean>>({});
   const [error, setError] = useState<string | null>(null);
 
+  const [knownStocks, setKnownStocks] = useState<TrendingStock[]>([]);
+  const [loadingInitial, setLoadingInitial] = useState(true);
+
   // We use a ref to track which pages are currently being fetched to avoid React strict mode double-fetching issues.
   const fetchingPages = useRef<Set<number>>(new Set());
 
-  const totalPages = Math.ceil(KNOWN_STOCKS.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(knownStocks.length / ITEMS_PER_PAGE);
 
   useEffect(() => {
+    getTrendingStocks().then((data) => {
+      setKnownStocks(data && data.length > 0 ? data : FALLBACK_STOCKS);
+      setLoadingInitial(false);
+    }).catch(() => {
+      setKnownStocks(FALLBACK_STOCKS);
+      setLoadingInitial(false);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (knownStocks.length === 0) return;
+
     async function loadPage(pageIndex: number) {
       if (fetchingPages.current.has(pageIndex)) return; // already in flight
 
@@ -36,10 +51,10 @@ export function PopularStocks() {
 
       // Determine what hasn't been loaded yet. If we have the data already, no need to fetch again.
       // But we can still skip if the length is 0.
-      const hasMissingData = KNOWN_STOCKS.slice(start, end).some((sym) => !stocksData[sym]);
+      const hasMissingData = knownStocks.slice(start, end).some((sym) => !stocksData[sym]);
       if (!hasMissingData) return;
 
-      const symbolsToFetch = KNOWN_STOCKS.slice(start, end);
+      const symbolsToFetch = knownStocks.slice(start, end);
 
       fetchingPages.current.add(pageIndex);
       setLoadingPages((prev) => ({ ...prev, [pageIndex]: true }));
@@ -65,9 +80,9 @@ export function PopularStocks() {
     if (currentPage < totalPages - 1) {
       loadPage(currentPage + 1);
     }
-  }, [currentPage, stocksData, totalPages]);
+  }, [currentPage, stocksData, totalPages, knownStocks]);
 
-  const currentSymbols = KNOWN_STOCKS.slice(
+  const currentSymbols = knownStocks.slice(
     currentPage * ITEMS_PER_PAGE,
     (currentPage + 1) * ITEMS_PER_PAGE
   );
@@ -106,41 +121,64 @@ export function PopularStocks() {
 
       {error && <div className="text-sm text-destructive font-medium">{error}</div>}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {currentSymbols.map((symbol) => {
-          const data = stocksData[symbol];
-
-          if (!data) {
-            return (
-              <div key={symbol} className="h-[140px] rounded-xl border border-foreground/10 bg-card/40 p-5 flex flex-col justify-between animate-pulse">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-3">
-                    <Skeleton className="h-6 w-32 rounded" />
-                    <Skeleton className="h-5 w-16 rounded" />
-                  </div>
-                  <Skeleton className="h-10 w-10 rounded-full" />
+      {loadingInitial ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
+            <div key={i} className="h-[140px] rounded-xl border border-foreground/10 bg-card/40 p-5 flex flex-col justify-between animate-pulse">
+              <div className="flex items-start justify-between">
+                <div className="space-y-3">
+                  <Skeleton className="h-6 w-32 rounded" />
+                  <Skeleton className="h-5 w-16 rounded" />
                 </div>
-                <div className="flex items-end justify-between mt-4">
-                  <Skeleton className="h-4 w-12 rounded" />
-                  <div className="space-y-1 items-end flex flex-col">
-                    <Skeleton className="h-7 w-20 rounded" />
-                    <Skeleton className="h-4 w-14 rounded" />
-                  </div>
+                <Skeleton className="h-10 w-10 rounded-full" />
+              </div>
+              <div className="flex items-end justify-between mt-4">
+                <Skeleton className="h-4 w-12 rounded" />
+                <div className="space-y-1 items-end flex flex-col">
+                  <Skeleton className="h-7 w-20 rounded" />
+                  <Skeleton className="h-4 w-14 rounded" />
                 </div>
               </div>
-            );
-          }
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {currentSymbols.map((symbol) => {
+            const data = stocksData[symbol];
 
-          return (
-            <PopularStockCard
-              key={symbol}
-              symbol={symbol}
-              profile={data.profile}
-              quote={data.quote}
-            />
-          );
-        })}
-      </div>
+            if (!data) {
+              return (
+                <div key={symbol} className="h-[140px] rounded-xl border border-foreground/10 bg-card/40 p-5 flex flex-col justify-between animate-pulse">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-3">
+                      <Skeleton className="h-6 w-32 rounded" />
+                      <Skeleton className="h-5 w-16 rounded" />
+                    </div>
+                    <Skeleton className="h-10 w-10 rounded-full" />
+                  </div>
+                  <div className="flex items-end justify-between mt-4">
+                    <Skeleton className="h-4 w-12 rounded" />
+                    <div className="space-y-1 items-end flex flex-col">
+                      <Skeleton className="h-7 w-20 rounded" />
+                      <Skeleton className="h-4 w-14 rounded" />
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            return (
+              <PopularStockCard
+                key={symbol}
+                symbol={symbol}
+                profile={data.profile}
+                quote={data.quote}
+              />
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
