@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, TrendingUp, Zap } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
@@ -72,27 +72,29 @@ export function Navbar() {
 
             {/* Desktop CTA */}
             <div className="hidden md:flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-neutral-400 hover:text-white hover:bg-white/5"
-                asChild
+              <Link
+                href="/login"
+                className={buttonVariants({
+                  variant: "ghost",
+                  size: "sm",
+                  className: "text-neutral-400 hover:text-white hover:bg-white/5"
+                })}
               >
-                <Link href="/login">Login</Link>
-              </Button>
-              <Button
-                size="sm"
-                className="relative bg-emerald-500 hover:bg-emerald-400 text-black font-semibold overflow-hidden group/btn transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/25"
-                asChild
+                Login
+              </Link>
+              <Link
+                href="/signup"
+                className={buttonVariants({
+                  size: "sm",
+                  className: "relative bg-emerald-500 hover:bg-emerald-400 text-black font-semibold overflow-hidden group/btn transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/25"
+                })}
               >
-                <Link href="/signup">
-                  <span className="flex items-center">
-                    <Zap className="w-3.5 h-3.5 mr-1" />
-                    Get Started
-                  </span>
-                  <div className="absolute inset-0 animate-shimmer" />
-                </Link>
-              </Button>
+                <span className="flex items-center">
+                  <Zap className="w-3.5 h-3.5 mr-1" />
+                  Get Started
+                </span>
+                <div className="absolute inset-0 animate-shimmer" />
+              </Link>
             </div>
 
             {/* Mobile Toggle */}
@@ -130,17 +132,27 @@ export function Navbar() {
                 </Link>
               ))}
               <div className="flex gap-2 mt-3 pt-3 border-t border-white/[0.06]">
-                <Button variant="outline" size="sm" className="flex-1 text-sm border-white/10" asChild onClick={() => setIsMobileOpen(false)}>
-                  <Link href="/login">Login</Link>
-                </Button>
-                <Button
-                  size="sm"
-                  className="flex-1 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-sm"
-                  asChild
+                <Link
+                  href="/login"
                   onClick={() => setIsMobileOpen(false)}
+                  className={buttonVariants({
+                    variant: "outline",
+                    size: "sm",
+                    className: "flex-1 text-sm border-white/10"
+                  })}
                 >
-                  <Link href="/signup">Get Started</Link>
-                </Button>
+                  Login
+                </Link>
+                <Link
+                  href="/signup"
+                  onClick={() => setIsMobileOpen(false)}
+                  className={buttonVariants({
+                    size: "sm",
+                    className: "flex-1 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-sm"
+                  })}
+                >
+                  Get Started
+                </Link>
               </div>
             </div>
           </motion.div>

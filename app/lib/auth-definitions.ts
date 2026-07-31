@@ -27,7 +27,7 @@ export const SignupFormSchema = z.object({
     })
     .trim(),
   terms: z.literal("true", {
-    errorMap: () => ({ message: "You must accept the terms to continue." }),
+    message: "You must accept the terms to continue.",
   }),
 });
 

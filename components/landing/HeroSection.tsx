@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight, Play, Sparkles, TrendingUp, TrendingDown, MessageSquare, ShieldCheck } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 
@@ -243,30 +243,30 @@ export function HeroSection() {
                 transition={{ duration: 0.6, delay: 0.3 }}
                 className="flex flex-col sm:flex-row gap-3"
               >
-                <Button
-                  size="lg"
+                <Link
+                  href="/signup"
                   id="hero-cta-primary"
-                  className="relative bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-base h-12 px-8 overflow-hidden group/btn transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/30 hover:-translate-y-0.5"
-                  asChild
+                  className={buttonVariants({
+                    size: "lg",
+                    className: "relative bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-base h-12 px-8 overflow-hidden group/btn transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/30 hover:-translate-y-0.5"
+                  })}
                 >
-                  <Link href="/signup">
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Start Your Free Analysis
-                    <div className="absolute inset-0 animate-shimmer" />
-                  </Link>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Start Your Free Analysis
+                  <div className="absolute inset-0 animate-shimmer" />
+                </Link>
+                <Link
+                  href="/features"
                   id="hero-cta-demo"
-                  className="border-white/10 hover:border-white/25 bg-white/3 hover:bg-white/6 text-white font-medium text-base h-12 px-8 gap-2 transition-all duration-300 hover:-translate-y-0.5"
-                  asChild
+                  className={buttonVariants({
+                    variant: "outline",
+                    size: "lg",
+                    className: "border-white/10 hover:border-white/25 bg-white/3 hover:bg-white/6 text-white font-medium text-base h-12 px-8 gap-2 transition-all duration-300 hover:-translate-y-0.5"
+                  })}
                 >
-                  <Link href="/features">
-                    <Play className="w-4 h-4 text-emerald-400 mr-2" />
-                    View Features
-                  </Link>
-                </Button>
+                  <Play className="w-4 h-4 text-emerald-400 mr-2" />
+                  View Features
+                </Link>
               </motion.div>
 
               {/* Trust indicators */}
