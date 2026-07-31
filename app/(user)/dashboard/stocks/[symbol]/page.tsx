@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { z } from "zod";
+import { DetailsHeader } from "@/components/dashboard/DetailsHeader";
 import { CompanyProfile } from "@/components/stocks/CompanyProfile";
 import { MarketMetrics } from "@/components/stocks/MarketMetrics";
 import { NewsSection } from "@/components/stocks/NewsSection";
@@ -56,7 +57,14 @@ export default async function StockDetailsPage({
   }
 
   return (
-    <div className="mx-auto w-full max-w-6xl space-y-4">
+    <div className="mx-auto  w-full max-w-6xl space-y-4">
+      <DetailsHeader
+        backHref="/dashboard/stocks"
+        backLabel="Back to Stocks"
+        searchHref="/dashboard/stocks"
+        searchLabel="Check another stock"
+      />
+
       <CompanyProfile profile={bundle.profile} fundamentals={bundle.fundamentals} />
 
       <div className="grid gap-4 lg:grid-cols-3">
