@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Figtree } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { SessionProvider } from "@/features/auth/providers/SessionProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { QueryProvider } from "@/providers/QueryProvider";
@@ -39,7 +38,6 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="tradex" />
       </head>
       <body className="min-h-full flex flex-col">
-        <SessionProvider>
           <QueryProvider>
             <ThemeProvider
               attribute="class"
@@ -51,7 +49,6 @@ export default function RootLayout({
               <Toaster position="top-right" />
             </ThemeProvider>
           </QueryProvider>
-        </SessionProvider>
       </body>
     </html>
   );
