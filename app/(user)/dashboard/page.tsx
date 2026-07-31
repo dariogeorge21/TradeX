@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { createClient } from "@/utils/supabase/server";
 import { MarketStatusPanel } from "@/components/dashboard/MarketStatusPanel";
+import { DashboardStockSearch } from "@/components/stocks/DashboardStockSearch";
 
 export const metadata: Metadata = {
   title: "Dashboard \u2014 TradeX",
@@ -71,6 +72,10 @@ export default async function DashboardPage() {
             Welcome to your TradeX dashboard. Your market intelligence hub is
             ready.
           </p>
+        </section>
+
+        <section aria-label="Stock search" className="w-full">
+          <DashboardStockSearch />
         </section>
 
         {/* Widget area */}
