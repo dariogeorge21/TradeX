@@ -1,5 +1,9 @@
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
+import { DashboardTopBar } from "@/components/dashboard/DashboardTopBar";
 
 export default async function UserLayout({
   children,
@@ -15,5 +19,32 @@ export default async function UserLayout({
     redirect("/login");
   }
 
-  return <>{children}</>;
+  // Derive display name and avatar from user metadata
+  const displayName =
+    user.user_metadata?.full_name ??
+    user.user_metadata?.name ??
+    user.email?.split("@")[0] ??
+    "Trader";
+
+  const avatarUrl =
+    user.user_metadata?.avatar_url ??
+    user.user_metadata?.picture ??
+    null;
+
+  // Read persisted sidebar state from cookie (set by SidebarProvider)
+  const cookieStore = await cookies();
+  const sidebarCookie = cookieStore.get("sidebar_state");
+  const defaultSidebarOpen = sidebarCookie ? sidebarCookie.value === "true" : true;
+
+  return (
+    <SidebarProvider defaultOpen={defaultSidebarOpen}>
+      <DashboardSidebar />
+      <div className="dashboard-shell">
+        <DashboardTopBar displayName={displayName} avatarUrl={avatarUrl} />
+        <main id="main-content" className="dashboard-content" tabIndex={-1}>
+          {children}
+        </main>
+      </div>
+    </SidebarProvider>
+  );
 }
