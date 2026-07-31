@@ -36,4 +36,4 @@ export class TTLCache {
 }
 
 export const cache30s = new TTLCache();
-
+export const cache10m = new TTLCache();

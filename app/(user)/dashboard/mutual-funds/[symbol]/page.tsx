@@ -8,6 +8,7 @@ import { FundRatingsCard } from "@/components/mutual-funds/FundRatingsCard";
 import { FundAISummaryCard } from "@/components/mutual-funds/FundAISummaryCard";
 import { FundNewsSection } from "@/components/mutual-funds/FundNewsSection";
 import { ErrorCard } from "@/components/stocks/ErrorCard";
+import { MotionDiv } from "@/components/ui/motion-wrapper";
 import type {
   MutualFundSummary,
   MutualFundData,
@@ -141,51 +142,77 @@ export default async function MutualFundDetailsPage({
         searchLabel="Check another mutual fund"
       />
 
-      <MutualFundHeader summary={bundle.data.summary} />
+      <MotionDiv
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <MutualFundHeader summary={bundle.data.summary} />
+      </MotionDiv>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <div className="space-y-4 lg:col-span-2">
-          <FundSummaryMetrics summary={bundle.data.summary} />
-          <FundNewsSection news={bundle.news} />
+      <MotionDiv 
+        initial="hidden"
+        animate="show"
+        variants={{
+          hidden: { opacity: 0 },
+          show: { opacity: 1, transition: { staggerChildren: 0.15 } }
+        }}
+        className="grid gap-4 lg:grid-cols-3"
+      >
+        <div className="space-y-4 lg:col-span-2 flex flex-col gap-4">
+          <MotionDiv variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
+            <FundSummaryMetrics summary={bundle.data.summary} />
+          </MotionDiv>
+          <MotionDiv variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
+            <FundNewsSection news={bundle.news} />
+          </MotionDiv>
         </div>
-        <div className="space-y-4">
-          <FundAISummaryCard symbol={ticker} meta={bundle.data.summary} />
+        <div className="space-y-4 flex flex-col gap-4">
+          <MotionDiv variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
+            <FundAISummaryCard symbol={ticker} meta={bundle.data.summary} />
+          </MotionDiv>
           {bundle.data.ratings && (
-            <FundRatingsCard ratings={bundle.data.ratings} />
+            <MotionDiv variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
+              <FundRatingsCard ratings={bundle.data.ratings} />
+            </MotionDiv>
           )}
 
           {/* Metadata summary panel */}
-          <div className="rounded-2xl border border-foreground/10 bg-card/40 p-4 text-sm space-y-2">
-            <div className="font-semibold text-foreground">Fund Details</div>
-            {[
-              { label: "Symbol", value: ticker },
-              { label: "Exchange", value: sp.exchange },
-              { label: "Country", value: sp.country },
-              { label: "Currency", value: sp.currency },
-            ]
-              .filter((r) => r.value)
-              .map((r) => (
-                <div key={r.label} className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">{r.label}</span>
-                  <span className="font-mono">{r.value}</span>
-                </div>
-              ))}
-          </div>
+          <MotionDiv variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
+            <div className="rounded-2xl border border-foreground/10 bg-card/40 p-4 text-sm space-y-2">
+              <div className="font-semibold text-foreground">Fund Details</div>
+              {[
+                { label: "Symbol", value: ticker },
+                { label: "Exchange", value: sp.exchange },
+                { label: "Country", value: sp.country },
+                { label: "Currency", value: sp.currency },
+              ]
+                .filter((r) => r.value)
+                .map((r) => (
+                  <div key={r.label} className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">{r.label}</span>
+                    <span className="font-mono">{r.value}</span>
+                  </div>
+                ))}
+            </div>
+          </MotionDiv>
 
           {bundle.providerErrors.length > 0 && (
-            <div className="rounded-2xl border border-foreground/10 bg-card/40 p-4 text-sm text-muted-foreground">
-              <div className="font-medium text-foreground">Data availability</div>
-              <ul className="mt-2 list-disc space-y-1 pl-5">
-                {bundle.providerErrors.slice(0, 4).map((e, idx) => (
-                  <li key={`${e.provider}-${idx}`}>
-                    {e.provider}: {e.message}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <MotionDiv variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
+              <div className="rounded-2xl border border-foreground/10 bg-card/40 p-4 text-sm text-muted-foreground">
+                <div className="font-medium text-foreground">Data availability</div>
+                <ul className="mt-2 list-disc space-y-1 pl-5">
+                  {bundle.providerErrors.slice(0, 4).map((e, idx) => (
+                    <li key={`${e.provider}-${idx}`}>
+                      {e.provider}: {e.message}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </MotionDiv>
           )}
         </div>
-      </div>
+      </MotionDiv>
     </div>
   );
 }
