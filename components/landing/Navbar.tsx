@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, TrendingUp, Zap } from "lucide-react";
+import { Menu, X, Zap } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import Image from "next/image";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -34,7 +35,7 @@ export function Navbar() {
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
           isScrolled
-            ? "glass border-b border-white/[0.06] shadow-2xl shadow-black/20"
+            ? "bg-background/90 backdrop-blur-xl border-b border-white/[0.08] shadow-2xl shadow-black/40"
             : "bg-transparent"
         )}
       >
@@ -45,15 +46,21 @@ export function Navbar() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <Link href="/" className="flex items-center gap-2 group">
-              <div className="relative w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center group-hover:border-emerald-500/60 transition-colors duration-300">
-                <TrendingUp className="w-4 h-4 text-emerald-400" />
-                <div className="absolute inset-0 rounded-xl bg-emerald-500/5 animate-pulse-glow" />
-              </div>
-              <span className="font-bold text-lg tracking-tight">
-                <span className="text-white">Trade</span>
-                <span className="gradient-text-emerald">X</span>
-              </span>
+              <Link href="/" className="flex items-center gap-2.5 group">
+                <div className="relative w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center group-hover:border-emerald-500/60 transition-colors duration-300 p-1">
+                  <Image
+                    src="/logo.png"
+                    alt="TradeX Logo"
+                    width={28}
+                    height={28}
+                    className="w-full h-full object-contain"
+                  />
+                  <div className="absolute inset-0 rounded-xl bg-emerald-500/5 animate-pulse-glow pointer-events-none" />
+                </div>
+                <span className="font-bold text-lg tracking-tight">
+                  <span className="text-white">Trade</span>
+                  <span className="gradient-text-emerald">X</span>
+                </span>
               </Link>
             </motion.div>
 
@@ -118,7 +125,7 @@ export function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-x-0 top-16 z-40 glass border-b border-white/[0.06] md:hidden"
+            className="fixed inset-x-0 top-16 z-40 bg-background/95 backdrop-blur-xl border-b border-white/[0.08] md:hidden shadow-2xl"
           >
             <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-1">
               {navLinks.map((link) => (
