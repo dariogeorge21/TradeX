@@ -10,7 +10,7 @@ const ParamsSchema = z.object({
     .trim()
     .min(1)
     .max(32)
-    .regex(/^[A-Za-z0-9.\-]+$/)
+    .regex(/^[A-Za-z0-9.\-_]+$/)
     .transform((s) => s.toUpperCase()),
 });
 
@@ -103,7 +103,61 @@ export async function GET(
   }
 
   try {
-    const bundle = await getMutualFundBundle(parsedParams.data.symbol);
+    // Build a bundle — either from URL query params (fast path)
+    // or from the service (fallback for direct URL access)
+    let bundle: any;
+
+    const name = req.nextUrl.searchParams.get("name");
+    if (name) {
+      // Fast path: metadata encoded by search bar
+      const fund_family = req.nextUrl.searchParams.get("fund_family") ?? "";
+      const fund_type = req.nextUrl.searchParams.get("fund_type") ?? "";
+      const currency = req.nextUrl.searchParams.get("currency") ?? "";
+      const exchange = req.nextUrl.searchParams.get("exchange") ?? "";
+      const performance_rating = parseFloat(req.nextUrl.searchParams.get("performance_rating") ?? "0") || null;
+      const risk_rating = parseFloat(req.nextUrl.searchParams.get("risk_rating") ?? "0") || null;
+
+      bundle = {
+        symbol: parsedParams.data.symbol,
+        asOfIso: new Date().toISOString(),
+        data: {
+          summary: {
+            symbol: parsedParams.data.symbol,
+            name,
+            fund_family,
+            fund_type,
+            currency,
+            exchange,
+            share_class_inception_date: "",
+            ytd_return: 0,
+            expense_ratio_net: 0,
+            yield: 0,
+            nav: 0,
+            min_investment: 0,
+            turnover_rate: 0,
+            net_assets: 0,
+            overview: "",
+            people: [],
+          },
+          performance: null,
+          risk: null,
+          ratings: (performance_rating || risk_rating) ? {
+            performance_rating: performance_rating ?? 0,
+            risk_rating: risk_rating ?? 0,
+            return_rating: 0,
+          } : null,
+          composition: null,
+          purchase_info: null,
+          sustainability: null,
+        },
+        news: [],
+        providerErrors: [],
+      };
+    } else {
+      // Fallback: try the service (may not find the symbol if not in paginated list)
+      bundle = await getMutualFundBundle(parsedParams.data.symbol);
+    }
+
     const userInput = buildGroqUserInput(bundle);
 
     const apiKey = process.env.GROQ_API_KEY;

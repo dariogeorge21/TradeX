@@ -37,6 +37,8 @@ export function MutualFundSearchBar({
 }: Props) {
   const router = useRouter();
   const anchorRef = React.useRef<HTMLDivElement | null>(null);
+  // Map of symbol -> full result object so we can pass metadata to the detail page
+  const resultMapRef = React.useRef<Map<string, MutualFundSearchResult>>(new Map());
 
   const [query, setQuery] = React.useState<string>("");
   const debounced = useDebouncedValue(query, 250);
@@ -80,7 +82,12 @@ export function MutualFundSearchBar({
         }
 
         if (!active) return;
-        setResults(parsed.data.results as MutualFundSearchResult[]);
+        const items = parsed.data.results as MutualFundSearchResult[];
+        // Update the symbol->metadata map
+        const map = new Map<string, MutualFundSearchResult>();
+        for (const r of items) map.set(r.symbol, r);
+        resultMapRef.current = map;
+        setResults(items);
       } catch (e) {
         if (!active) return;
         const message = e instanceof Error ? e.message : "Search failed.";
@@ -107,7 +114,20 @@ export function MutualFundSearchBar({
         onInputValueChange={(val) => setQuery(val)}
         onValueChange={(symbol) => {
           if (!symbol) return;
-          router.push(`/dashboard/mutual-funds/${encodeURIComponent(symbol)}`);
+          const meta = resultMapRef.current.get(symbol);
+          const params = new URLSearchParams();
+          if (meta) {
+            if (meta.name) params.set("name", meta.name);
+            if (meta.fund_family) params.set("fund_family", meta.fund_family);
+            if (meta.fund_type) params.set("fund_type", meta.fund_type);
+            if (meta.currency) params.set("currency", meta.currency);
+            if (meta.exchange) params.set("exchange", meta.exchange);
+            if (meta.country) params.set("country", meta.country);
+            if (meta.performance_rating != null) params.set("performance_rating", String(meta.performance_rating));
+            if (meta.risk_rating != null) params.set("risk_rating", String(meta.risk_rating));
+          }
+          const qs = params.toString();
+          router.push(`/dashboard/mutual-funds/${encodeURIComponent(symbol)}${qs ? `?${qs}` : ""}`);
         }}
       >
         <ComboboxInput

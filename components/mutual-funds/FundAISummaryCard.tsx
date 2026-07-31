@@ -6,7 +6,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import ReactMarkdown from "react-markdown";
 import { Sparkles } from "lucide-react";
 
-export function FundAISummaryCard({ symbol }: { symbol: string }) {
+import type { MutualFundSummary } from "@/types/mutual-funds";
+
+export function FundAISummaryCard({
+  symbol,
+  meta,
+}: {
+  symbol: string;
+  meta?: MutualFundSummary | null;
+}) {
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [text, setText] = React.useState<string>("");
@@ -21,9 +29,21 @@ export function FundAISummaryCard({ symbol }: { symbol: string }) {
       setText("");
 
       try {
-        const res = await fetch(`/api/mutual-funds/${encodeURIComponent(symbol)}/ai-summary`, {
-          signal: controller.signal,
-        });
+        // Forward metadata as query params so the API can build a bundle without re-fetching
+        const params = new URLSearchParams();
+        if (meta) {
+          if (meta.name) params.set("name", meta.name);
+          if (meta.fund_family) params.set("fund_family", meta.fund_family);
+          if (meta.fund_type) params.set("fund_type", meta.fund_type);
+          if (meta.currency) params.set("currency", meta.currency);
+          if ((meta as any).exchange) params.set("exchange", (meta as any).exchange);
+          if (meta.ytd_return) params.set("ytd_return", String(meta.ytd_return));
+        }
+        const qs = params.toString();
+        const res = await fetch(
+          `/api/mutual-funds/${encodeURIComponent(symbol)}/ai-summary${qs ? `?${qs}` : ""}`,
+          { signal: controller.signal }
+        );
 
         if (!res.ok) {
           const msg = await res.text().catch(() => "");
