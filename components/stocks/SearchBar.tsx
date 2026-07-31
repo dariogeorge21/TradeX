@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
+import { Loader2 } from "lucide-react";
 import { Combobox, ComboboxInput } from "@/components/ui/combobox";
 import { SearchDropdown } from "@/components/stocks/SearchDropdown";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
@@ -37,6 +38,7 @@ export function SearchBar({
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [results, setResults] = React.useState<StockSearchResult[]>([]);
+  const [isPending, startTransition] = React.useTransition();
 
   React.useEffect(() => {
     const q = debounced.trim();
@@ -94,22 +96,29 @@ export function SearchBar({
   }, [debounced]);
 
   return (
-    <div ref={anchorRef} className={className}>
+    <div ref={anchorRef} className={`relative ${className} ${isPending ? 'opacity-70 pointer-events-none transition-opacity duration-300' : ''}`}>
       <Combobox
         value={null}
         onInputValueChange={(val) => setQuery(val)}
         onValueChange={(symbol) => {
           if (!symbol) return;
-          router.push(`/dashboard/stocks/${encodeURIComponent(symbol)}`);
+          startTransition(() => {
+            router.push(`/dashboard/stocks/${encodeURIComponent(symbol)}`);
+          });
         }}
       >
         <ComboboxInput
           placeholder={placeholder}
-          showClear
+          showClear={!isPending}
           showTrigger={false}
           className="w-full"
           aria-label="Search stocks"
         />
+        {isPending && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2">
+            <Loader2 className="h-5 w-5 animate-spin text-primary" />
+          </div>
+        )}
         <SearchDropdown
           anchor={anchorRef}
           query={query}
