@@ -7,7 +7,7 @@ import {
   type ChangeEvent,
 } from "react";
 import { motion } from "framer-motion";
-import { ArrowUp, Loader2 } from "lucide-react";
+import { ArrowUp, Square } from "lucide-react";
 
 const SUGGESTION_CHIPS = [
   "Analyze Apple (AAPL) fundamentals",
@@ -22,6 +22,7 @@ interface ChatInputProps {
   value: string;
   onChange: (value: string) => void;
   onSend: () => void;
+  onStop: () => void;
   isStreaming: boolean;
   showSuggestions?: boolean;
 }
@@ -30,6 +31,7 @@ export function ChatInput({
   value,
   onChange,
   onSend,
+  onStop,
   isStreaming,
   showSuggestions = false,
 }: ChatInputProps) {
@@ -50,12 +52,14 @@ export function ChatInput({
     (e: KeyboardEvent<HTMLTextAreaElement>) => {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
-        if (!isStreaming && value.trim()) {
+        if (isStreaming) {
+          onStop();
+        } else if (value.trim()) {
           onSend();
         }
       }
     },
-    [isStreaming, value, onSend]
+    [isStreaming, value, onSend, onStop]
   );
 
   const handleChipClick = useCallback(
@@ -70,7 +74,7 @@ export function ChatInput({
 
   return (
     <div className="chat-input-area">
-      {/* Suggestion chips — shown only on welcome screen */}
+      {/* Suggestion chips */}
       {showSuggestions && (
         <motion.div
           initial={{ opacity: 0, y: 8 }}
@@ -101,7 +105,11 @@ export function ChatInput({
           value={value}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
-          placeholder="Ask about stocks, markets, earnings, macro trends…"
+          placeholder={
+            isStreaming
+              ? "Generating response…"
+              : "Ask about stocks, markets, earnings, macro trends…"
+          }
           rows={1}
           disabled={isStreaming}
           aria-label="Chat message input"
@@ -110,24 +118,39 @@ export function ChatInput({
           spellCheck
         />
 
-        <button
-          id="chat-send-btn"
-          className={`chat-send-btn ${canSend ? "chat-send-btn--active" : ""}`}
-          onClick={onSend}
-          disabled={!canSend}
-          aria-label={isStreaming ? "Generating response…" : "Send message"}
-          title={isStreaming ? "Generating…" : "Send (Enter)"}
-        >
-          {isStreaming ? (
-            <Loader2 size={16} className="animate-spin" />
-          ) : (
+        {/* Stop button while streaming */}
+        {isStreaming ? (
+          <button
+            id="chat-stop-btn"
+            className="chat-stop-btn"
+            onClick={onStop}
+            aria-label="Stop generating"
+            title="Stop generating (Esc)"
+          >
+            <Square size={14} fill="currentColor" />
+          </button>
+        ) : (
+          <button
+            id="chat-send-btn"
+            className={`chat-send-btn ${canSend ? "chat-send-btn--active" : ""}`}
+            onClick={onSend}
+            disabled={!canSend}
+            aria-label="Send message"
+            title="Send (Enter)"
+          >
             <ArrowUp size={16} />
-          )}
-        </button>
+          </button>
+        )}
       </div>
 
       <p id="chat-input-hint" className="chat-input-hint">
         Press <kbd>Enter</kbd> to send &bull; <kbd>Shift+Enter</kbd> for newline
+        {isStreaming && (
+          <>
+            {" "}
+            &bull; <kbd>Esc</kbd> to stop
+          </>
+        )}
       </p>
     </div>
   );

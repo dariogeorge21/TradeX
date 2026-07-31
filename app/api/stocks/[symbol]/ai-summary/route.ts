@@ -111,7 +111,7 @@ export async function GET(
       return new Response("GROQ API key not configured", { status: 500 });
     }
 
-    const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    let groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -128,8 +128,29 @@ export async function GET(
       }),
     });
 
+    if (groqRes.status === 429) {
+      console.warn(`[AI Summary] Rate limited on versatile model for ${parsedParams.data.symbol}, falling back to instant...`);
+      groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: "llama-3.1-8b-instant",
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            { role: "user", content: userInput },
+          ],
+          stream: true,
+          temperature: 0.2,
+        }),
+      });
+    }
+
     if (!groqRes.ok || !groqRes.body) {
-      throw new Error(`Groq API error: ${groqRes.status}`);
+      const errorText = await groqRes.text().catch(() => "");
+      throw new Error(`Groq API error: ${groqRes.status} ${errorText}`);
     }
 
     const reader = groqRes.body.getReader();
