@@ -73,7 +73,7 @@ export async function GET(req: NextRequest) {
     const data: FinnhubSearchResponse = (await res.json()) as FinnhubSearchResponse;
     const seen = new Set<string>();
     const results: StockSearchResult[] = (data.result ?? [])
-      .filter((r) => typeof r.symbol === "string" && r.symbol.length > 0)
+      .filter((r) => typeof r.symbol === "string" && /^[A-Z]+$/.test(r.symbol))
       .filter((r) => {
         const key = r.symbol.toUpperCase();
         if (seen.has(key)) return false;
