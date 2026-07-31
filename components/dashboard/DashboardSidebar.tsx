@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, LogOut } from "lucide-react";
+import { Home, LogOut, Newspaper } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import {
@@ -29,6 +29,11 @@ const NAV_ITEMS = [
     label: "Home",
     href: "/dashboard",
     icon: Home,
+  },
+  {
+    label: "News",
+    href: "/dashboard/news",
+    icon: Newspaper,
   },
 ] as const;
 
