@@ -1444,7 +1444,7 @@
 .dash-home-content {
   position: relative;
   z-index: 10;
-  max-width: 960px;
+  max-width: 1100px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -2516,5 +2516,452 @@
   .news-featured-footer {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   MARKET STATUS PANEL
+   ═══════════════════════════════════════════════════════════════════ */
+
+@keyframes mkt-card-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes mkt-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.35; transform: scale(0.75); }
+}
+
+@keyframes mkt-shimmer {
+  from { background-position: -400px 0; }
+  to   { background-position: 400px 0; }
+}
+
+/* ─── Panel wrapper ──────────────────────────────────────────────── */
+.mkt-status-panel {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 20px;
+  padding: 1.5rem 1.75rem;
+  backdrop-filter: blur(16px);
+  animation: mkt-card-in 0.55s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.mkt-status-panel--error {
+  padding: 1.25rem 1.5rem;
+}
+
+/* ─── Panel header ───────────────────────────────────────────────── */
+.mkt-status-header {
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mkt-status-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.mkt-status-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.mkt-status-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.18);
+  color: oklch(0.70 0.18 162);
+  flex-shrink: 0;
+}
+
+.mkt-status-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  color: oklch(0.92 0.005 240);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+/* Live badge */
+.mkt-status-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 100px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: oklch(0.70 0.18 162);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.mkt-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: oklch(0.70 0.18 162);
+  animation: mkt-pulse 1.8s ease-in-out infinite;
+}
+
+/* Meta row */
+.mkt-status-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.mkt-open-summary {
+  font-size: 0.8125rem;
+  color: oklch(0.52 0.008 240);
+}
+
+.mkt-open-count {
+  font-weight: 700;
+  color: oklch(0.70 0.18 162);
+}
+
+.mkt-last-updated {
+  font-size: 0.75rem;
+  color: oklch(0.42 0.006 240);
+}
+
+/* ─── Exchange grid ──────────────────────────────────────────────── */
+.mkt-status-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.875rem;
+}
+
+/* ─── Exchange card ──────────────────────────────────────────────── */
+.mkt-exchange-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 1.125rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: transform 0.22s ease, border-color 0.22s ease,
+    box-shadow 0.22s ease, background 0.22s ease;
+  overflow: hidden;
+}
+
+.mkt-exchange-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    ellipse at top left,
+    rgba(16, 185, 129, 0) 0%,
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.mkt-exchange-card--open::before {
+  background: radial-gradient(
+    ellipse at top left,
+    rgba(16, 185, 129, 0.07) 0%,
+    transparent 65%
+  );
+}
+
+.mkt-exchange-card:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
+}
+
+.mkt-exchange-card:hover::before {
+  opacity: 1;
+}
+
+.mkt-exchange-card--open:hover {
+  border-color: rgba(16, 185, 129, 0.22);
+  box-shadow: 0 8px 28px rgba(16, 185, 129, 0.06);
+}
+
+/* ─── Card top ───────────────────────────────────────────────────── */
+.mkt-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  margin-bottom: 0.875rem;
+}
+
+.mkt-exchange-flag {
+  font-size: 1.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.mkt-exchange-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.mkt-exchange-name {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: oklch(0.88 0.005 240);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mkt-exchange-region {
+  font-size: 0.6875rem;
+  color: oklch(0.48 0.007 240);
+  line-height: 1;
+}
+
+/* ─── Session chip ───────────────────────────────────────────────── */
+.mkt-status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 100px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+
+.mkt-chip-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: mkt-pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+/* Open (regular session) — emerald */
+.mkt-status-chip--open {
+  background: rgba(16, 185, 129, 0.12);
+  color: oklch(0.72 0.18 162);
+  border: 1px solid rgba(16, 185, 129, 0.22);
+}
+
+/* Pre-market — amber */
+.mkt-status-chip--pre {
+  background: rgba(245, 158, 11, 0.1);
+  color: oklch(0.72 0.15 75);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+/* Post-market / after-hours — violet */
+.mkt-status-chip--post {
+  background: rgba(139, 92, 246, 0.1);
+  color: oklch(0.68 0.18 295);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+/* Closed — muted */
+.mkt-status-chip--closed {
+  background: rgba(255, 255, 255, 0.04);
+  color: oklch(0.45 0.006 240);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ─── Card divider ───────────────────────────────────────────────── */
+.mkt-card-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  margin-bottom: 0.875rem;
+}
+
+/* ─── Card bottom ────────────────────────────────────────────────── */
+.mkt-card-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mkt-card-time-group {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.mkt-card-time-label {
+  font-size: 0.6875rem;
+  color: oklch(0.45 0.006 240);
+}
+
+.mkt-card-time-value {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: oklch(0.78 0.005 240);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Holiday display */
+.mkt-card-holiday,
+.mkt-card-next-holiday {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.375rem;
+  font-size: 0.6875rem;
+  line-height: 1.35;
+}
+
+.mkt-card-holiday {
+  color: oklch(0.72 0.15 75);
+  background: rgba(245, 158, 11, 0.07);
+  border: 1px solid rgba(245, 158, 11, 0.15);
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+}
+
+.mkt-card-next-holiday {
+  color: oklch(0.50 0.007 240);
+}
+
+.mkt-holiday-icon {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.mkt-holiday-name {
+  font-weight: 600;
+}
+
+.mkt-next-holiday-label {
+  font-size: 0.6875rem;
+  color: oklch(0.40 0.006 240);
+}
+
+.mkt-next-holiday-name {
+  font-size: 0.6875rem;
+  color: oklch(0.55 0.007 240);
+  font-weight: 500;
+}
+
+.mkt-next-holiday-date {
+  font-size: 0.6875rem;
+  color: oklch(0.45 0.006 240);
+}
+
+/* ─── Error state ────────────────────────────────────────────────── */
+.mkt-error-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.mkt-error-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.mkt-error-text {
+  flex: 1;
+  font-size: 0.875rem;
+  color: oklch(0.52 0.008 240);
+  margin: 0;
+}
+
+.mkt-retry-btn {
+  padding: 0.375rem 0.875rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: oklch(0.78 0.005 240);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.mkt-retry-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* ─── Skeleton loader ────────────────────────────────────────────── */
+.mkt-skeleton {
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.04) 100%
+  );
+  background-size: 800px 100%;
+  animation: mkt-shimmer 1.5s ease-in-out infinite;
+}
+
+.mkt-exchange-card--skeleton {
+  pointer-events: none;
+  gap: 0.875rem;
+}
+
+.mkt-skeleton--title  { width: 180px; height: 20px; }
+.mkt-skeleton--badge  { width: 54px; height: 22px; border-radius: 100px; }
+.mkt-skeleton--flag   { width: 32px; height: 32px; border-radius: 50%; }
+.mkt-skeleton--name   { width: 80%; height: 14px; }
+.mkt-skeleton--chip   { width: 60px; height: 20px; border-radius: 100px; }
+.mkt-skeleton--time   { width: 50%; height: 12px; }
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 1023px) {
+  .mkt-status-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .mkt-status-panel {
+    padding: 1.125rem 1rem;
+  }
+
+  .mkt-status-grid {
+    grid-template-columns: 1fr;
+    gap: 0.625rem;
+  }
+
+  .mkt-exchange-card {
+    padding: 0.875rem 1rem;
+  }
+
+  .mkt-status-title-row {
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
 }

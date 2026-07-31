@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { createClient } from "@/utils/supabase/server";
+import { MarketStatusPanel } from "@/components/dashboard/MarketStatusPanel";
 
 export const metadata: Metadata = {
   title: "Dashboard \u2014 TradeX",
@@ -111,36 +112,8 @@ export default async function DashboardPage() {
           ))}
         </section>
 
-        {/* Future content area */}
-        <div
-          className="dash-future-area"
-          role="region"
-          aria-label="Upcoming features"
-        >
-          <div className="dash-future-inner">
-            <div className="dash-future-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" width={28} height={28}>
-                <path
-                  d="M3 12L7 8L11 12L17 6L21 10"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M3 20H21"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </div>
-            <p className="dash-future-text">
-              AI-powered stock analysis, real-time insights, and portfolio
-              tracking are coming soon.
-            </p>
-          </div>
-        </div>
+        {/* Market Status Section */}
+        <MarketStatusPanel />
       </div>
     </div>
   );
