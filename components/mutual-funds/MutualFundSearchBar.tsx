@@ -14,15 +14,15 @@ const SearchResponseSchema = z.object({
     z.object({
       symbol: z.string(),
       name: z.string(),
-      country: z.string().optional(),
-      currency: z.string().optional(),
-      fund_family: z.string().optional(),
-      fund_type: z.string().optional(),
-      performance_rating: z.number().optional(),
-      risk_rating: z.number().optional(),
-      exchange: z.string().optional(),
-      mic_code: z.string().optional(),
-    })
+      country: z.string().nullish(),
+      currency: z.string().nullish(),
+      fund_family: z.string().nullish(),
+      fund_type: z.string().nullish(),
+      performance_rating: z.number().nullish(),
+      risk_rating: z.number().nullish(),
+      exchange: z.string().nullish(),
+      mic_code: z.string().nullish(),
+    }).passthrough()
   ),
 });
 

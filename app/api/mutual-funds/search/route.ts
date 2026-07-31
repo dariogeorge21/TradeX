@@ -27,7 +27,10 @@ type TwelveDataSearchResult = {
 };
 
 type TwelveDataSearchResponse = {
-  data?: TwelveDataSearchResult[];
+  result?: {
+    count: number;
+    list: TwelveDataSearchResult[];
+  };
   status: string;
   message?: string;
 };
@@ -90,12 +93,13 @@ export async function GET(req: NextRequest) {
       throw new Error(data.message || "API error");
     }
 
-    const results: MutualFundSearchResult[] = (data.data ?? [])
+    const rawList = data.result?.list ?? [];
+    const results: MutualFundSearchResult[] = rawList
       .filter(
         (r) =>
-          r.name.toLowerCase().includes(q) ||
-          r.symbol.toLowerCase().includes(q) ||
-          r.fund_family?.toLowerCase().includes(q)
+          r?.name?.toLowerCase().includes(q) ||
+          r?.symbol?.toLowerCase().includes(q) ||
+          r?.fund_family?.toLowerCase().includes(q)
       )
       .slice(0, 12);
 
