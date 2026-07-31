@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { z } from "zod";
+import { DetailsHeader } from "@/components/dashboard/DetailsHeader";
 import { MutualFundHeader } from "@/components/mutual-funds/MutualFundHeader";
 import { FundSummaryMetrics } from "@/components/mutual-funds/FundSummaryMetrics";
 import { FundRatingsCard } from "@/components/mutual-funds/FundRatingsCard";
@@ -133,6 +134,13 @@ export default async function MutualFundDetailsPage({
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-4">
+      <DetailsHeader
+        backHref="/dashboard/mutual-funds"
+        backLabel="Back to Mutual Funds"
+        searchHref="/dashboard/mutual-funds"
+        searchLabel="Check another mutual fund"
+      />
+
       <MutualFundHeader summary={bundle.data.summary} />
 
       <div className="grid gap-4 lg:grid-cols-3">

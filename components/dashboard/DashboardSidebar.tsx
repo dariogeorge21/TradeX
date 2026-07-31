@@ -1,8 +1,9 @@
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, LogOut, Newspaper, LineChart, PieChart } from "lucide-react";
+import { Home, LogOut, Newspaper, LineChart, PieChart, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import {
@@ -97,6 +98,11 @@ export function DashboardSidebar() {
   const pathname = usePathname();
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
+  const [loadingHref, setLoadingHref] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    setLoadingHref(null);
+  }, [pathname]);
 
   return (
     <Sidebar collapsible="icon" className="sidebar-custom">
@@ -118,6 +124,7 @@ export function DashboardSidebar() {
                   href === "/dashboard"
                     ? pathname === "/dashboard"
                     : pathname.startsWith(href);
+                const isLoading = loadingHref === href;
 
                 return (
                   <SidebarMenuItem key={href}>
@@ -128,6 +135,11 @@ export function DashboardSidebar() {
                         <Link
                           href={href}
                           aria-current={isActive ? "page" : undefined}
+                          onClick={() => {
+                            if (!isActive) {
+                              setLoadingHref(href);
+                            }
+                          }}
                         />
                       }
                       className={
@@ -136,10 +148,17 @@ export function DashboardSidebar() {
                           : "sidebar-nav-item"
                       }
                     >
-                      <Icon
-                        className="sidebar-nav-icon"
-                        aria-hidden="true"
-                      />
+                      {isLoading ? (
+                        <Loader2
+                          className="sidebar-nav-icon animate-spin"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <Icon
+                          className="sidebar-nav-icon"
+                          aria-hidden="true"
+                        />
+                      )}
                       <span>{label}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
