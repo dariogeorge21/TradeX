@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, LogOut, Newspaper, LineChart, PieChart, Loader2 } from "lucide-react";
+import { Home, LogOut, Newspaper, LineChart, MessageSquare, PieChart, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import {
@@ -45,6 +45,11 @@ const NAV_ITEMS = [
     label: "News",
     href: "/dashboard/news",
     icon: Newspaper,
+  },
+  {
+    label: "AI Chat",
+    href: "/dashboard/chatbot",
+    icon: MessageSquare,
   },
 ] as const;
 
