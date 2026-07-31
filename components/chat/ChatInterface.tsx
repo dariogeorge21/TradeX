@@ -168,7 +168,7 @@ export function ChatInterface({ initialSessions }: ChatInterfaceProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages: history,
-          sessionId: activeSessionId,
+          ...(activeSessionId ? { sessionId: activeSessionId } : {}),
         }),
         signal: controller.signal,
       });
