@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/utils/supabase/middleware";
 
 // Protected routes that require authentication
-const PROTECTED_ROUTES = ["/user"];
+const PROTECTED_ROUTES = ["/user", "/dashboard"];
 // Auth routes that should redirect authenticated users away
 const AUTH_ROUTES = ["/login", "/signup"];
 
