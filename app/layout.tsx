@@ -20,6 +20,9 @@ export const metadata: Metadata = {
   description:
     "TradeX is an AI-powered market research assistant that simplifies stock analysis, evaluates investment risks, and answers market-related questions — no complex charts needed.",
   keywords: ["stock analysis", "AI investing", "market insights", "risk assessment", "TradeX"],
+  appleWebApp: {
+    title: "TradeX",
+  },
   openGraph: {
     title: "TradeX — AI Market Insight",
     description: "Understand the stock market in seconds with AI-powered plain-language insights.",

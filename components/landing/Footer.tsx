@@ -1,9 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { TrendingUp, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { FaLinkedin, FaGithub, FaTwitter } from "react-icons/fa";
 import Link from "next/link";
+import Image from "next/image";
 
 const footerLinks = {
   Product: [
@@ -73,8 +74,14 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
-                <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+              <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center p-0.5">
+                <Image
+                  src="/logo.png"
+                  alt="TradeX Logo"
+                  width={20}
+                  height={20}
+                  className="w-full h-full object-contain"
+                />
               </div>
               <span className="font-bold text-base">
                 <span className="text-white">Trade</span>
