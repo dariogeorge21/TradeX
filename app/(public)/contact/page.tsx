@@ -1,12 +1,41 @@
 "use client";
 
+import { useState, useTransition } from "react";
 import { motion } from "framer-motion";
-import { Mail, MapPin, MessageSquare, ArrowRight } from "lucide-react";
+import { Mail, MapPin, MessageSquare, ArrowRight, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { submitContactForm } from "@/app/actions/contact";
 
 export default function ContactPage() {
+  const [isPending, startTransition] = useTransition();
+  const [status, setStatus] = useState<{ type: 'idle' | 'success' | 'error', message?: string }>({ type: 'idle' });
+  const [errors, setErrors] = useState<Record<string, string[]>>({});
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus({ type: 'idle' });
+    setErrors({});
+    
+    const formData = new FormData(e.currentTarget);
+    
+    startTransition(async () => {
+      const result = await submitContactForm(formData);
+      
+      if (!result.success) {
+        if (result.errors) {
+          setErrors(result.errors);
+        } else if (result.message) {
+          setStatus({ type: 'error', message: result.message });
+        }
+      } else {
+        setStatus({ type: 'success', message: result.message });
+        (e.target as HTMLFormElement).reset();
+      }
+    });
+  };
+
   return (
     <div className="relative min-h-screen pb-24 overflow-hidden">
       {/* Background Gradients */}
@@ -85,31 +114,88 @@ export default function ContactPage() {
           >
             <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 blur-[80px] pointer-events-none" />
             
-            <form className="relative z-10 flex flex-col gap-6" onSubmit={(e) => e.preventDefault()}>
+            <form className="relative z-10 flex flex-col gap-6" onSubmit={handleSubmit}>
+              
+              {status.type === 'success' && (
+                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+                  <p className="text-sm text-emerald-400 font-medium">{status.message}</p>
+                </div>
+              )}
+
+              {status.type === 'error' && (
+                <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+                  <p className="text-sm text-rose-400 font-medium">{status.message}</p>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label htmlFor="firstName" className="text-sm font-medium text-neutral-300">First name</label>
-                  <Input id="firstName" placeholder="John" className="bg-white/[0.03] border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-12 rounded-xl" />
+                  <Input 
+                    id="firstName" 
+                    name="firstName"
+                    disabled={isPending}
+                    placeholder="John" 
+                    className="bg-white/[0.03] border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-12 rounded-xl" 
+                  />
+                  {errors?.firstName && <p className="text-xs text-rose-400 mt-1">{errors.firstName[0]}</p>}
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="lastName" className="text-sm font-medium text-neutral-300">Last name</label>
-                  <Input id="lastName" placeholder="Doe" className="bg-white/[0.03] border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-12 rounded-xl" />
+                  <Input 
+                    id="lastName" 
+                    name="lastName"
+                    disabled={isPending}
+                    placeholder="Doe" 
+                    className="bg-white/[0.03] border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-12 rounded-xl" 
+                  />
+                  {errors?.lastName && <p className="text-xs text-rose-400 mt-1">{errors.lastName[0]}</p>}
                 </div>
               </div>
               
               <div className="space-y-2">
                 <label htmlFor="email" className="text-sm font-medium text-neutral-300">Email</label>
-                <Input id="email" type="email" placeholder="john@company.com" className="bg-white/[0.03] border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-12 rounded-xl" />
+                <Input 
+                  id="email" 
+                  name="email"
+                  type="email" 
+                  disabled={isPending}
+                  placeholder="john@company.com" 
+                  className="bg-white/[0.03] border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-12 rounded-xl" 
+                />
+                {errors?.email && <p className="text-xs text-rose-400 mt-1">{errors.email[0]}</p>}
               </div>
 
               <div className="space-y-2">
                 <label htmlFor="message" className="text-sm font-medium text-neutral-300">Message</label>
-                <Textarea id="message" placeholder="How can we help?" className="bg-white/[0.03] border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 min-h-[150px] rounded-xl resize-none" />
+                <Textarea 
+                  id="message" 
+                  name="message"
+                  disabled={isPending}
+                  placeholder="How can we help?" 
+                  className="bg-white/[0.03] border-white/10 focus:border-emerald-500/50 focus:ring-emerald-500/20 min-h-[150px] rounded-xl resize-none" 
+                />
+                {errors?.message && <p className="text-xs text-rose-400 mt-1">{errors.message[0]}</p>}
               </div>
 
-              <Button type="submit" className="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-semibold h-12 rounded-xl mt-4 group">
-                Send message
-                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              <Button 
+                type="submit" 
+                disabled={isPending}
+                className="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-semibold h-12 rounded-xl mt-4 group transition-all"
+              >
+                {isPending ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    Send message
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
               </Button>
             </form>
           </motion.div>
