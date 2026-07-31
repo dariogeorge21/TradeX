@@ -5,12 +5,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, TrendingUp, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 const navLinks = [
-  { label: "Features", href: "#features" },
-  { label: "Market Trends", href: "#trends" },
-  { label: "AI Chat", href: "#ai-chat" },
-  { label: "Pricing", href: "#pricing" },
+  { label: "Home", href: "/" },
+  { label: "Features", href: "/features" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export function Navbar() {
@@ -39,12 +41,11 @@ export function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <motion.a
-              href="/"
-              className="flex items-center gap-2 group"
+            <motion.div
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
+              <Link href="/" className="flex items-center gap-2 group">
               <div className="relative w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center group-hover:border-emerald-500/60 transition-colors duration-300">
                 <TrendingUp className="w-4 h-4 text-emerald-400" />
                 <div className="absolute inset-0 rounded-xl bg-emerald-500/5 animate-pulse-glow" />
@@ -53,18 +54,19 @@ export function Navbar() {
                 <span className="text-white">Trade</span>
                 <span className="gradient-text-emerald">X</span>
               </span>
-            </motion.a>
+              </Link>
+            </motion.div>
 
             {/* Desktop Nav */}
             <nav className="hidden md:flex items-center gap-1">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.label}
                   href={link.href}
                   className="px-4 py-2 text-sm text-neutral-400 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-200 font-medium"
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
             </nav>
 
@@ -74,16 +76,22 @@ export function Navbar() {
                 variant="ghost"
                 size="sm"
                 className="text-neutral-400 hover:text-white hover:bg-white/5"
+                asChild
               >
-                Login
+                <Link href="/login">Login</Link>
               </Button>
               <Button
                 size="sm"
                 className="relative bg-emerald-500 hover:bg-emerald-400 text-black font-semibold overflow-hidden group/btn transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/25"
+                asChild
               >
-                <Zap className="w-3.5 h-3.5 mr-1" />
-                Get Started
-                <div className="absolute inset-0 animate-shimmer" />
+                <Link href="/signup">
+                  <span className="flex items-center">
+                    <Zap className="w-3.5 h-3.5 mr-1" />
+                    Get Started
+                  </span>
+                  <div className="absolute inset-0 animate-shimmer" />
+                </Link>
               </Button>
             </div>
 
@@ -112,24 +120,26 @@ export function Navbar() {
           >
             <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-1">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.label}
                   href={link.href}
                   onClick={() => setIsMobileOpen(false)}
                   className="px-4 py-3 text-sm text-neutral-300 hover:text-white rounded-xl hover:bg-white/5 transition-all font-medium"
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
               <div className="flex gap-2 mt-3 pt-3 border-t border-white/[0.06]">
-                <Button variant="outline" size="sm" className="flex-1 text-sm border-white/10">
-                  Login
+                <Button variant="outline" size="sm" className="flex-1 text-sm border-white/10" asChild onClick={() => setIsMobileOpen(false)}>
+                  <Link href="/login">Login</Link>
                 </Button>
                 <Button
                   size="sm"
                   className="flex-1 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-sm"
+                  asChild
+                  onClick={() => setIsMobileOpen(false)}
                 >
-                  Get Started
+                  <Link href="/signup">Get Started</Link>
                 </Button>
               </div>
             </div>

@@ -3,20 +3,19 @@
 import { motion } from "framer-motion";
 import { TrendingUp, ExternalLink } from "lucide-react";
 import { FaLinkedin, FaGithub, FaTwitter } from "react-icons/fa";
+import Link from "next/link";
 
 const footerLinks = {
   Product: [
-    { label: "Features", href: "#features" },
-    { label: "AI Chat", href: "#ai-chat" },
-    { label: "Market Trends", href: "#trends" },
-    { label: "Pricing", href: "#pricing" },
+    { label: "Features", href: "/features" },
+    { label: "Pricing", href: "/pricing" },
     { label: "Changelog", href: "#" },
   ],
   Company: [
-    { label: "About", href: "#" },
+    { label: "About", href: "/about" },
     { label: "Blog", href: "#" },
     { label: "Careers", href: "#" },
-    { label: "Contact", href: "#" },
+    { label: "Contact", href: "/contact" },
   ],
   Legal: [
     { label: "Privacy Policy", href: "#" },
@@ -58,14 +57,14 @@ export function Footer() {
             <p className="text-neutral-400 text-sm mb-6 max-w-md mx-auto">
               Join thousands of investors who use TradeX to make confident, data-driven decisions every day.
             </p>
-            <a
-              href="#"
+            <Link
+              href="/signup"
               id="footer-cta"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-sm transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-0.5"
             >
               Start for Free
               <ExternalLink className="w-3.5 h-3.5" />
-            </a>
+            </Link>
           </div>
         </motion.div>
 
@@ -73,7 +72,7 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pb-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <a href="/" className="flex items-center gap-2 mb-4">
+            <Link href="/" className="flex items-center gap-2 mb-4">
               <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
                 <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
               </div>
@@ -81,7 +80,7 @@ export function Footer() {
                 <span className="text-white">Trade</span>
                 <span className="gradient-text-emerald">X</span>
               </span>
-            </a>
+            </Link>
             <p className="text-xs text-neutral-500 leading-relaxed mb-4 max-w-[180px]">
               AI-powered market intelligence for everyone. Not a trading platform.
             </p>
@@ -107,12 +106,12 @@ export function Footer() {
               <ul className="flex flex-col gap-2.5">
                 {links.map((link) => (
                   <li key={link.label}>
-                    <a
+                    <Link
                       href={link.href}
                       className="text-xs text-neutral-500 hover:text-neutral-200 transition-colors duration-200"
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
