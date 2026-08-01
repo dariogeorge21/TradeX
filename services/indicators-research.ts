@@ -12,6 +12,18 @@ import {
 } from "@/lib/indicators-fallback-data";
 
 export async function getPopularIndicators(): Promise<IndicatorSnapshot[]> {
+  // Return snapshots for ALL indicators so the grid can display them by category
+  const snapshots: IndicatorSnapshot[] = [];
+  
+  for (const meta of MARKET_INDICATORS) {
+    const snap = generateIndicatorSnapshot(meta.id);
+    if (snap) snapshots.push(snap);
+  }
+  
+  return snapshots;
+}
+
+export async function getPopularIndicatorsOnly(): Promise<IndicatorSnapshot[]> {
   const popularMeta = MARKET_INDICATORS.filter(ind => ind.popular);
   const snapshots: IndicatorSnapshot[] = [];
   
