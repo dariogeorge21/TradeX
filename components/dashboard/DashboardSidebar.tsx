@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, LogOut, Newspaper, LineChart, MessageSquare, PieChart, Loader2, Bitcoin, DollarSign } from "lucide-react";
+import { Home, LogOut, Newspaper, LineChart, MessageSquare, PieChart, Loader2, Bitcoin, DollarSign, Activity } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import {
@@ -50,6 +50,11 @@ const NAV_ITEMS = [
     label: "Forex",
     href: "/dashboard/forex",
     icon: DollarSign,
+  },
+  {
+    label: "Market Indicators",
+    href: "/dashboard/indicators",
+    icon: Activity,
   },
   {
     label: "News",
