@@ -12,7 +12,7 @@ export default function LandingPage() {
       <Navbar />
       <HeroSection />
       <div className="  max-w-7xl mx-auto">
-        <TradeXMockup />
+        {/* <TradeXMockup /> */}
       </div>
       <FeaturesSection />
       <HowItWorksSection />
