@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PopularMutualFundCard } from "./PopularMutualFundCard";
 import { fetchPopularMutualFundsData, getTrendingMutualFunds, type PopularMutualFundData, type TrendingMutualFund } from "@/app/actions/mutual-funds";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 
 const FALLBACK_FUNDS: TrendingMutualFund[] = [
   { symbol: "FXAIX", name: "Fidelity 500 Index Fund" },
@@ -25,7 +25,7 @@ const FALLBACK_FUNDS: TrendingMutualFund[] = [
 
 const ITEMS_PER_PAGE = 6;
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
@@ -35,7 +35,7 @@ const containerVariants = {
   }
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
 };
