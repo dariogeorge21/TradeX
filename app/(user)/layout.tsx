@@ -53,7 +53,7 @@ export default async function UserLayout({
         <DashboardTopBar displayName={displayName} avatarUrl={avatarUrl} />
         <main id="main-content" className="dashboard-content relative" tabIndex={-1}>
           {children}
-          <FloatingAIAssistant />
+          {/* <FloatingAIAssistant /> */}
         </main>
       </div>
     </SidebarProvider>

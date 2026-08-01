@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { getWatchlist } from "@/app/actions/watchlist";
+import { getMutualFundWatchlist } from "@/app/actions/mutual-funds-watchlist";
 import { WatchlistView } from "./WatchlistView";
 import { WatchlistItem, WatchlistStats } from "@/types/watchlist";
 
@@ -48,6 +49,44 @@ function hydrateWithMarketData(dbItems: any[]): WatchlistItem[] {
   });
 }
 
+// Convert mutual fund watchlist DB rows to WatchlistItem format
+function hydrateMutualFunds(mfItems: any[]): WatchlistItem[] {
+  return mfItems.map((item) => {
+    const seed = item.fund_code.split('').reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
+    const basePrice = 10 + (seed % 500);
+    const isPositive = seed % 2 === 0;
+    const changePercent = (seed % 80) / 10 * (isPositive ? 1 : -1);
+    const change = basePrice * (changePercent / 100);
+
+    const sparkline = Array.from({ length: 20 }, (_, i) => {
+      const volatility = (seed % 8) / 100;
+      const trend = isPositive ? i * volatility : -i * volatility;
+      return basePrice + trend + (Math.random() - 0.5) * basePrice * 0.04;
+    });
+
+    const aiSentiments: ('Bullish' | 'Bearish' | 'Neutral')[] = ['Bullish', 'Bearish', 'Neutral'];
+
+    return {
+      id: item.id,
+      userId: item.user_id,
+      symbol: item.fund_code,
+      assetType: 'mutual_fund',
+      createdAt: item.created_at,
+      updatedAt: item.updated_at,
+      name: item.fund_name,
+      price: basePrice,
+      change,
+      changePercent,
+      marketCap: undefined,
+      volume: undefined,
+      aiSentiment: aiSentiments[seed % 3],
+      aiScore: 40 + (seed % 60),
+      sparkline,
+      sector: item.category || undefined,
+    };
+  });
+}
+
 function calculateStats(items: WatchlistItem[]): WatchlistStats {
   if (items.length === 0) {
     return {
@@ -73,8 +112,11 @@ function calculateStats(items: WatchlistItem[]): WatchlistStats {
 }
 
 export default async function WatchlistPage() {
-  const { data: dbItems, success } = await getWatchlist();
-  
+  const [{ data: dbItems, success }, { data: mfDbItems, success: mfSuccess }] = await Promise.all([
+    getWatchlist(),
+    getMutualFundWatchlist(),
+  ]);
+
   if (!success) {
     return (
       <div className="flex items-center justify-center min-h-[50vh] text-slate-400">
@@ -83,7 +125,9 @@ export default async function WatchlistPage() {
     );
   }
 
-  const hydratedItems = hydrateWithMarketData(dbItems || []);
+  const hydratedStocks = hydrateWithMarketData(dbItems || []);
+  const hydratedFunds = hydrateMutualFunds(mfSuccess ? (mfDbItems || []) : []);
+  const hydratedItems = [...hydratedStocks, ...hydratedFunds];
   const stats = calculateStats(hydratedItems);
 
   return (

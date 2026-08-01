@@ -23,6 +23,14 @@ export async function POST(
   try {
     const { messages } = await req.json();
 
+    // Sanitize: map "ai" -> "assistant" and drop anything with an invalid role
+    const sanitizedMessages = (Array.isArray(messages) ? messages : [])
+      .map((m: { role: string; content: string }) => ({
+        ...m,
+        role: m.role === "ai" ? "assistant" : m.role,
+      }))
+      .filter((m: { role: string }) => m.role === "user" || m.role === "assistant");
+
     const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -33,7 +41,7 @@ export async function POST(
         model: "llama-3.3-70b-versatile",
         messages: [
           { role: "system", content: `${SYSTEM_PROMPT}\nThe stock in focus is ${symbol}.` },
-          ...messages,
+          ...sanitizedMessages,
         ],
         stream: true,
         temperature: 0.3,

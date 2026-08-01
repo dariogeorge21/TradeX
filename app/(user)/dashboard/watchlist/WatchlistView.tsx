@@ -11,6 +11,7 @@ import { WatchlistTable } from "@/components/watchlist/WatchlistTable";
 import { WatchlistEmptyState } from "@/components/watchlist/WatchlistEmptyState";
 import { RemoveDialog } from "@/components/watchlist/RemoveDialog";
 import { removeFromWatchlist } from "@/app/actions/watchlist";
+import { removeMutualFundFromWatchlist } from "@/app/actions/mutual-funds-watchlist";
 import { toast } from "sonner";
 import { AISummaryModal } from "@/components/watchlist/AISummaryModal";
 
@@ -80,9 +81,14 @@ export function WatchlistView({ initialItems, stats }: WatchlistViewProps) {
   const handleRemove = async () => {
     if (!itemToRemove) return;
     setIsRemoving(true);
+
+    const item = items.find(i => i.symbol === itemToRemove);
+    const isMutualFund = item?.assetType === 'mutual_fund';
     
     try {
-      const res = await removeFromWatchlist(itemToRemove);
+      const res = isMutualFund
+        ? await removeMutualFundFromWatchlist(itemToRemove)
+        : await removeFromWatchlist(itemToRemove);
       if (res.success) {
         setItems(items.filter(i => i.symbol !== itemToRemove));
         toast.success(`${itemToRemove} removed from watchlist`);
