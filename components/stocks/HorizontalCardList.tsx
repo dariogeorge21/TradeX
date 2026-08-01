@@ -2,7 +2,7 @@ import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface HorizontalCardListProps {
-  title: string;
+  title: React.ReactNode;
   children: React.ReactNode;
 }
 

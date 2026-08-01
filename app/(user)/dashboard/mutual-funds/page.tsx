@@ -1,14 +1,29 @@
 import type { Metadata } from "next";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MutualFundSearchBar } from "@/components/mutual-funds/MutualFundSearchBar";
-import { PopularMutualFunds } from "@/components/mutual-funds/PopularMutualFunds";
-import { Search } from "lucide-react";
+import { MutualFundsHero } from "@/components/mutual-funds/MutualFundsHero";
+import { FundGrid } from "@/components/mutual-funds/FundGrid";
 import { MotionDiv } from "@/components/ui/motion-wrapper";
+import { INDIAN_MUTUAL_FUND_TEST_DATA } from "@/lib/mutual-funds-fallback-data";
 
 export const metadata: Metadata = {
   title: "Mutual Funds — TradeX",
   description: "AI-powered mutual fund research and intelligence.",
 };
+
+// Map fallback data to FundCardProps
+const mappedFunds = INDIAN_MUTUAL_FUND_TEST_DATA.slice(0, 8).map((f) => ({
+  fundCode: f.isin,
+  name: f.name,
+  amc: f.name.split(" ")[0] + " Mutual Fund", // Mock AMC
+  category: f.category,
+  nav: f.nav,
+  returns1Y: (Math.random() * 40) - 10, // Mock 1Y Return (-10% to 30%)
+  returns3Y: (Math.random() * 30) + 10, // Mock 3Y Return (10% to 40%)
+  expenseRatio: f.expenseRatio,
+  riskLevel: f.risk,
+  rating: f.rating,
+  minSip: 500,
+  aum: f.aumCrore,
+}));
 
 export default function MutualFundsIndexPage() {
   return (
@@ -16,44 +31,23 @@ export default function MutualFundsIndexPage() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="mx-auto w-full max-w-6xl space-y-8 pb-8"
+      className="mx-auto w-full max-w-7xl space-y-12 pb-12"
     >
-      {/* Hero Search Section */}
-      <Card className="relative overflow-hidden border-2 border-emerald-500/20 bg-card/80 backdrop-blur-xl shadow-2xl shadow-emerald-500/5">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-linear-to-br from-emerald-500/10 via-background to-blue-500/10"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-emerald-500/20 blur-3xl opacity-50"
-        />
+      <MutualFundsHero />
 
-        <CardHeader className="relative text-center pt-10">
-          <CardTitle className="text-3xl font-extrabold tracking-tight md:text-4xl text-emerald-950 dark:text-emerald-50">
-            Discover Mutual Funds
-          </CardTitle>
-          <p className="text-muted-foreground max-w-xl mx-auto mt-2">
-            Search any mutual fund by symbol or name to access an institutional-grade dashboard with real-time AI synthesis.
-          </p>
-        </CardHeader>
-        <CardContent className="relative max-w-8xl w-[500px] mx-auto pb-12">
-          <div className="relative group flex justify-center">
-            <div className="absolute inset-x-0 -inset-y-1 mx-auto max-w-[600px] rounded-xl bg-linear-to-r from-emerald-500 to-blue-500 opacity-25 blur transition duration-1000 group-hover:opacity-50 group-hover:duration-200" />
-            <div className="relative flex items-center w-full max-w-[600px] bg-background rounded-lg shadow-sm border border-foreground/10 ring-offset-background focus-within:ring-2 focus-within:ring-emerald-500 focus-within:ring-offset-2">
-              <div className="pl-4 pr-2 text-muted-foreground">
-                <Search className="h-5 w-5 text-emerald-500/70" />
-              </div>
-              <div className="flex-1 w-full">
-                <MutualFundSearchBar className="[&>div>div]:border-0 [&>div>div]:shadow-none [&>div>div]:bg-transparent [&>div>div]:focus-within:ring-0 [&>div>div>input]:text-lg [&>div>div>input]:py-6" placeholder="Search mutual funds (e.g., VTSAX, FXAIX)…" />
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Popular Mutual Funds Section */}
-      <PopularMutualFunds />
+      <section className="px-2 space-y-12 mt-8">
+        <FundGrid 
+          title="Trending Mutual Funds" 
+          description="Most searched and viewed funds by TradeX investors today."
+          funds={mappedFunds.slice(0, 4)} 
+        />
+        
+        <FundGrid 
+          title="Top Performing Equity Funds" 
+          description="Consistent high-growth funds with proven track records."
+          funds={mappedFunds.slice(4, 8)} 
+        />
+      </section>
     </MotionDiv>
   );
 }

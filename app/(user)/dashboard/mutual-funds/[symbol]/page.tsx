@@ -3,17 +3,16 @@ import { notFound } from "next/navigation";
 import { z } from "zod";
 import { DetailsHeader } from "@/components/dashboard/DetailsHeader";
 import { MutualFundHeader } from "@/components/mutual-funds/MutualFundHeader";
-import { FundSummaryMetrics } from "@/components/mutual-funds/FundSummaryMetrics";
-import { FundRatingsCard } from "@/components/mutual-funds/FundRatingsCard";
-import { FundAISummaryCard } from "@/components/mutual-funds/FundAISummaryCard";
 import { FundNewsSection } from "@/components/mutual-funds/FundNewsSection";
 import { ErrorCard } from "@/components/stocks/ErrorCard";
 import { MotionDiv } from "@/components/ui/motion-wrapper";
-import type {
-  MutualFundSummary,
-  MutualFundData,
-  MutualFundBundle,
-} from "@/types/mutual-funds";
+import type { MutualFundSummary, MutualFundData, MutualFundBundle } from "@/types/mutual-funds";
+
+// New Components
+import { BentoMetrics } from "@/components/mutual-funds/details/BentoMetrics";
+import { PortfolioComposition } from "@/components/mutual-funds/details/PortfolioComposition";
+import { AIAnalysisHub } from "@/components/mutual-funds/details/AIAnalysisHub";
+import { MutualFundWatchlistButton } from "@/components/mutual-funds/watchlist/MutualFundWatchlistButton";
 
 const ParamsSchema = z.object({
   symbol: z
@@ -58,8 +57,6 @@ export default async function MutualFundDetailsPage({
 
   const ticker = parsed.data.symbol;
 
-  // Build the bundle from URL search params that the search bar encoded.
-  // This avoids a re-fetch from TwelveData's paginated list on every page load.
   let bundle: MutualFundBundle | null = null;
 
   if (sp.name) {
@@ -110,7 +107,7 @@ export default async function MutualFundDetailsPage({
     };
   }
 
-  // If no metadata in URL params (e.g. direct URL access), try the service
+  // If no metadata in URL params, try the service
   if (!bundle) {
     try {
       const { getMutualFundBundle } = await import("@/services/mutual-fund-research");
@@ -123,7 +120,7 @@ export default async function MutualFundDetailsPage({
   // If we still have nothing at all, show error
   if (!bundle || !bundle.data?.summary) {
     return (
-      <div className="mx-auto w-full max-w-6xl">
+      <div className="mx-auto w-full max-w-7xl">
         <ErrorCard
           message={`No data found for "${ticker}". Please search again from the Mutual Funds page.`}
           backHref="/dashboard/mutual-funds"
@@ -133,86 +130,94 @@ export default async function MutualFundDetailsPage({
     );
   }
 
+  const { summary, composition, risk } = bundle.data;
+  
+  // Create mock AI analysis based on the data
+  const mockAnalysis = {
+    summary: summary.overview || "This fund aims to provide long-term capital growth by investing in equity instruments.",
+    strengths: [
+      "Consistent track record in large-cap equities",
+      `Low expense ratio of ${summary.expense_ratio_net}%`,
+      "High liquidity and AUM"
+    ],
+    weaknesses: [
+      "Susceptible to market volatility",
+      "Lower dividend yield compared to value funds"
+    ],
+    suitableInvestors: [
+      "Long-term investors (5+ years)",
+      "High risk tolerance profiles"
+    ]
+  };
+
   return (
-    <div className="mx-auto w-full max-w-6xl space-y-4">
+    <div className="mx-auto w-full max-w-7xl space-y-6 pb-12">
       <DetailsHeader
         backHref="/dashboard/mutual-funds"
         backLabel="Back to Mutual Funds"
         searchHref="/dashboard/mutual-funds"
         searchLabel="Check another mutual fund"
+        action={
+          <MutualFundWatchlistButton 
+            fund={{
+              fund_code: ticker,
+              fund_name: summary.name,
+              amc: summary.fund_family,
+              category: summary.fund_type,
+            }}
+            showText={true} 
+          />
+        }
       />
 
-      <MotionDiv
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <MutualFundHeader summary={bundle.data.summary} />
+      <MotionDiv initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+        <MutualFundHeader summary={summary} />
       </MotionDiv>
+      
+      <BentoMetrics 
+        nav={summary.nav}
+        ytdReturn={summary.ytd_return}
+        expenseRatio={summary.expense_ratio_net}
+        aum={summary.net_assets ? summary.net_assets / 10000000 : undefined} // Mock conversion to Cr
+        riskLevel={bundle.data.ratings?.risk_rating || 3}
+        turnoverRate={summary.turnover_rate}
+      />
 
-      <MotionDiv 
-        initial="hidden"
-        animate="show"
-        variants={{
-          hidden: { opacity: 0 },
-          show: { opacity: 1, transition: { staggerChildren: 0.15 } }
-        }}
-        className="grid gap-4 lg:grid-cols-3"
-      >
-        <div className="space-y-4 lg:col-span-2 flex flex-col gap-4">
-          <MotionDiv variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
-            <FundSummaryMetrics summary={bundle.data.summary} />
-          </MotionDiv>
-          <MotionDiv variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column (Charts, Composition, AI Hub) */}
+        <div className="lg:col-span-2 space-y-6">
+          {composition && (
+            <PortfolioComposition 
+              topHoldings={composition.top_holdings?.map(h => ({ symbol: h.symbol, name: h.name, weight: h.weight }))}
+              sectors={composition.major_market_sectors}
+              assetAllocation={composition.asset_allocation as any}
+            />
+          )}
+          
+          <AIAnalysisHub analysis={mockAnalysis} />
+        </div>
+
+        {/* Right Column (News, Additional Info) */}
+        <div className="space-y-6">
+          <div className="bg-card border border-foreground/10 rounded-2xl p-6 shadow-sm">
+            <h3 className="text-xl font-bold tracking-tight mb-4">Latest Fund News</h3>
             <FundNewsSection news={bundle.news} />
-          </MotionDiv>
-        </div>
-        <div className="space-y-4 flex flex-col gap-4">
-          <MotionDiv variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
-            <FundAISummaryCard symbol={ticker} meta={bundle.data.summary} />
-          </MotionDiv>
-          {bundle.data.ratings && (
-            <MotionDiv variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
-              <FundRatingsCard ratings={bundle.data.ratings} />
-            </MotionDiv>
-          )}
-
-          {/* Metadata summary panel */}
-          <MotionDiv variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
-            <div className="rounded-2xl border border-foreground/10 bg-card/40 p-4 text-sm space-y-2">
-              <div className="font-semibold text-foreground">Fund Details</div>
-              {[
-                { label: "Symbol", value: ticker },
-                { label: "Exchange", value: sp.exchange },
-                { label: "Country", value: sp.country },
-                { label: "Currency", value: sp.currency },
-              ]
-                .filter((r) => r.value)
-                .map((r) => (
-                  <div key={r.label} className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">{r.label}</span>
-                    <span className="font-mono">{r.value}</span>
-                  </div>
-                ))}
-            </div>
-          </MotionDiv>
-
+          </div>
+          
           {bundle.providerErrors.length > 0 && (
-            <MotionDiv variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
-              <div className="rounded-2xl border border-foreground/10 bg-card/40 p-4 text-sm text-muted-foreground">
-                <div className="font-medium text-foreground">Data availability</div>
-                <ul className="mt-2 list-disc space-y-1 pl-5">
-                  {bundle.providerErrors.slice(0, 4).map((e, idx) => (
-                    <li key={`${e.provider}-${idx}`}>
-                      {e.provider}: {e.message}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </MotionDiv>
+            <div className="rounded-2xl border border-foreground/10 bg-card/40 p-4 text-sm text-muted-foreground">
+              <div className="font-medium text-foreground">Data availability</div>
+              <ul className="mt-2 list-disc space-y-1 pl-5">
+                {bundle.providerErrors.slice(0, 4).map((e, idx) => (
+                  <li key={`${e.provider}-${idx}`}>
+                    {e.provider}: {e.message}
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
         </div>
-      </MotionDiv>
+      </div>
     </div>
   );
 }

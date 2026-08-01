@@ -150,6 +150,9 @@ export async function getBasicMetrics(symbol: string): Promise<BasicMetrics> {
     eps: num("epsTTM"),
     dividendYield: num("dividendYieldIndicatedAnnual"),
     beta: num("beta"),
+    roe: num("roeTTM"),
+    profitMargin: num("netMarginTTM"),
+    revenue: null,
   };
 }
 
