@@ -1,14 +1,14 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { 
-  BarChart2, 
-  GitCompare, 
-  Briefcase, 
-  LineChart, 
-  Sparkles, 
-  Eye, 
-  FileText 
+import { motion, Variants } from "framer-motion";
+import {
+  BarChart2,
+  GitCompare,
+  Briefcase,
+  LineChart,
+  Sparkles,
+  Eye,
+  FileText
 } from "lucide-react";
 import Link from "next/link";
 
@@ -17,12 +17,12 @@ const actions = [
   { icon: GitCompare, label: "Compare", color: "text-orange-400", bg: "bg-orange-500/10", href: "/dashboard/compare" },
   { icon: Briefcase, label: "Portfolio AI", color: "text-purple-400", bg: "bg-purple-500/10", href: "/dashboard/portfolio" },
   { icon: LineChart, label: "Screener", color: "text-emerald-400", bg: "bg-emerald-500/10", href: "/dashboard/screener" },
-  { icon: Sparkles, label: "Ask AI", color: "text-fuchsia-400", bg: "bg-fuchsia-500/10", href: "#ask-ai" },
+  { icon: Sparkles, label: "Ask AI", color: "text-fuchsia-400", bg: "bg-fuchsia-500/10", href: "/dashboard/chatbot" },
   { icon: Eye, label: "Watchlist", color: "text-amber-400", bg: "bg-amber-500/10", href: "/dashboard/watchlist" },
   { icon: FileText, label: "Research", color: "text-sky-400", bg: "bg-sky-500/10", href: "/dashboard/research" },
 ];
 
-const container = {
+const container: Variants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
@@ -30,7 +30,7 @@ const container = {
   }
 };
 
-const item = {
+const item: Variants = {
   hidden: { opacity: 0, y: 10 },
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
 };
@@ -39,7 +39,7 @@ export function QuickActions() {
   return (
     <section className="mb-8" aria-label="Quick Actions">
       <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4 px-1">Quick Actions</h2>
-      <motion.div 
+      <motion.div
         variants={container}
         initial="hidden"
         animate="show"
