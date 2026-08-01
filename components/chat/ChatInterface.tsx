@@ -142,7 +142,10 @@ export function ChatInterface({ initialSessions }: ChatInterfaceProps) {
   // ---------------------------------------------------------------------------
   const scrollToBottom = useCallback((force = false) => {
     if (!force && userScrolledUpRef.current) return;
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+    }
   }, []);
 
   // Detect manual scroll
@@ -326,15 +329,15 @@ export function ChatInterface({ initialSessions }: ChatInterfaceProps) {
         }
       } catch (err) {
         if ((err as Error)?.name !== "AbortError") {
-          showToast("Connection error. Please check your network and try again.");
+          showToast("Rate limit exceeded. Please try again later.");
           setMessages((prev) =>
             prev.map((m) =>
               m.id === assistantId
                 ? {
-                    ...m,
-                    content:
-                      "⚠️ Something went wrong. Please try again.",
-                  }
+                  ...m,
+                  content:
+                    "⚠️Rate limit exceeded. Please try again later."
+                }
                 : m
             )
           );
@@ -508,9 +511,8 @@ export function ChatInterface({ initialSessions }: ChatInterfaceProps) {
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className={`chat-skeleton chat-skeleton--${
-                    i % 2 === 0 ? "user" : "assistant"
-                  }`}
+                  className={`chat-skeleton chat-skeleton--${i % 2 === 0 ? "user" : "assistant"
+                    }`}
                 />
               ))}
             </div>
