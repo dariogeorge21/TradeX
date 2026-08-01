@@ -5,6 +5,7 @@ import { cache30s } from "@/lib/ttl-cache";
 import { fetchJson } from "@/lib/http";
 import type { MutualFundBundle, ProviderError, MutualFundData, NewsItem, MutualFundSummary } from "@/types/mutual-funds";
 import { getCompanyNews } from "@/services/finnhub";
+import { getFallbackMutualFundBundle } from "@/lib/mutual-funds-fallback-data";
 
 const SymbolSchema = z
   .string()
@@ -51,6 +52,10 @@ type TwelveDataListResponse = {
 
 export async function getMutualFundBundle(symbol: string): Promise<MutualFundBundle> {
   const ticker = SymbolSchema.parse(symbol);
+  
+  // Using dummy data for testing purposes due to API issues
+  return getFallbackMutualFundBundle(ticker);
+
   const cacheKey = `mutual-fund:${ticker}`;
 
   return cache30s.getOrSet(cacheKey, 30_000, async () => {
