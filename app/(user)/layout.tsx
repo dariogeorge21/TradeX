@@ -5,6 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { DashboardTopBar } from "@/components/dashboard/DashboardTopBar";
+import { FloatingAIAssistant } from "@/components/dashboard/FloatingAIAssistant";
 
 export const viewport: Viewport = {
   themeColor: "#000000",
@@ -50,8 +51,9 @@ export default async function UserLayout({
       <DashboardSidebar />
       <div className="dashboard-shell">
         <DashboardTopBar displayName={displayName} avatarUrl={avatarUrl} />
-        <main id="main-content" className="dashboard-content" tabIndex={-1}>
+        <main id="main-content" className="dashboard-content relative" tabIndex={-1}>
           {children}
+          <FloatingAIAssistant />
         </main>
       </div>
     </SidebarProvider>

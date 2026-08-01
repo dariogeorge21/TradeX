@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { signOut } from "@/app/actions/auth";
+import { GlobalCommandPalette } from "./GlobalCommandPalette";
 
 interface DashboardTopBarProps {
   displayName: string;
@@ -65,6 +66,10 @@ export function DashboardTopBar({ displayName, avatarUrl }: DashboardTopBarProps
           </svg>
           <span className="topbar-brand-text">TradeX</span>
         </Link>
+      </div>
+
+      <div className="flex-1 max-w-xl mx-4 hidden md:block">
+        <GlobalCommandPalette />
       </div>
 
       {/* Right: user info + sign out */}

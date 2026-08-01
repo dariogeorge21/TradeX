@@ -39,6 +39,9 @@ export type BasicMetrics = {
   eps: number | null;
   dividendYield: number | null;
   beta: number | null;
+  roe: number | null;
+  profitMargin: number | null;
+  revenue: number | null;
 };
 
 export type RecommendationTrends = {
@@ -76,6 +79,23 @@ export type TechnicalIndicators = {
   sma200: number | null;
 };
 
+export type AIAnalysis = {
+  sentiment: "Bullish" | "Bearish" | "Neutral";
+  confidenceScore: number;
+  bullCase: string[];
+  bearCase: string[];
+  risks: string[];
+  catalysts: string[];
+};
+
+export type FinancialHealth = {
+  revenueGrowth: number | null;
+  debtToEquity: number | null;
+  freeCashFlow: number | null;
+  grossMargin: number | null;
+  operatingMargin: number | null;
+};
+
 export type StockResearchBundle = {
   symbol: StockSymbol;
   asOfIso: string;
@@ -87,5 +107,7 @@ export type StockResearchBundle = {
   news: NewsItem[];
   historicalDaily: PriceBar[];
   technicals: TechnicalIndicators | null;
+  aiAnalysis: AIAnalysis | null;
+  financialHealth: FinancialHealth | null;
   providerErrors: ProviderError[];
 };

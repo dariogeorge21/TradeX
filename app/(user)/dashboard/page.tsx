@@ -1,33 +1,24 @@
 import type { Metadata } from "next";
 import { createClient } from "@/utils/supabase/server";
-import { MarketStatusPanel } from "@/components/dashboard/MarketStatusPanel";
-import { DashboardStockSearch } from "@/components/stocks/DashboardStockSearch";
+
+// V2 Components
+import { DashboardHero } from "@/components/dashboard/DashboardHero";
+import { QuickActions } from "@/components/dashboard/QuickActions";
+import { MarketOverviewCards } from "@/components/dashboard/MarketOverviewCards";
+import { AIMarketBrief } from "@/components/dashboard/AIMarketBrief";
+import { DashboardWatchlist } from "@/components/dashboard/DashboardWatchlist";
+import { PortfolioSnapshot } from "@/components/dashboard/PortfolioSnapshot";
+import { MarketMovers } from "@/components/dashboard/MarketMovers";
+import { RecentAIAnalyses } from "@/components/dashboard/RecentAIAnalyses";
+import { EconomicCalendar } from "@/components/dashboard/EconomicCalendar";
+import { TrendingNews } from "@/components/dashboard/TrendingNews";
+import { MarketHeatmap } from "@/components/dashboard/MarketHeatmap";
 
 export const metadata: Metadata = {
-  title: "Dashboard \u2014 TradeX",
+  title: "Dashboard — TradeX",
   description: "Your TradeX market intelligence dashboard.",
 };
 
-// ---------------------------------------------------------------------------
-// Time-of-day greeting (server-side, computed in UTC)
-// ---------------------------------------------------------------------------
-function getTimeGreeting(): { greeting: string; emoji: string } {
-  const hour = new Date().getUTCHours();
-
-  if (hour >= 5 && hour < 12) {
-    return { greeting: "Good morning", emoji: "\u2600\uFE0F" };
-  } else if (hour >= 12 && hour < 17) {
-    return { greeting: "Good afternoon", emoji: "\uD83C\uDF24\uFE0F" };
-  } else if (hour >= 17 && hour < 21) {
-    return { greeting: "Good evening", emoji: "\uD83C\uDF05" };
-  } else {
-    return { greeting: "Good night", emoji: "\uD83C\uDF19" };
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Page
-// ---------------------------------------------------------------------------
 export default async function DashboardPage() {
   const supabase = await createClient();
   const {
@@ -40,85 +31,27 @@ export default async function DashboardPage() {
     user?.email?.split("@")[0] ??
     "Trader";
 
-  const { greeting, emoji } = getTimeGreeting();
-
   return (
-    <div className="dash-home">
-      {/* Ambient background blobs */}
-      <div className="dash-home-bg" aria-hidden="true">
-        <div className="dash-home-blob dash-home-blob--1" />
-        <div className="dash-home-blob dash-home-blob--2" />
-        <div className="auth-bg-grid" />
-      </div>
+    <div className="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 py-6 pb-24 overflow-x-hidden">
+      <DashboardHero displayName={displayName} />
+      
+      <MarketOverviewCards />
+      <QuickActions />
 
-      {/* Page content */}
-      <div className="dash-home-content">
-        {/* Greeting section */}
-        <section
-          className="dash-greeting-section"
-          aria-labelledby="greeting-heading"
-        >
-          <div className="dash-greeting-badge" aria-hidden="true">
-            <span className="dash-greeting-emoji">{emoji}</span>
-          </div>
-          <h1 id="greeting-heading" className="dash-greeting-title">
-            {greeting},{" "}
-            <span className="dash-greeting-name gradient-text-emerald">
-              {displayName}
-            </span>
-            !
-          </h1>
-          <p className="dash-greeting-sub">
-            Welcome to your TradeX dashboard. Your market intelligence hub is
-            ready.
-          </p>
-        </section>
+      {/* Main Grid */}
+      <div className="dash-v2-grid">
+        <AIMarketBrief />
+        <DashboardWatchlist />
+        
+        <PortfolioSnapshot />
+        <MarketMovers />
 
-        <section aria-label="Stock search" className="w-full">
-          <DashboardStockSearch />
-        </section>
-
-        {/* Widget area */}
-        <section className="dash-widgets" aria-label="Dashboard overview">
-          {(
-            [
-              {
-                id: "stocks",
-                label: "Stocks Tracked",
-                value: "\u2014",
-                desc: "Monitor your watchlist",
-                accent: "emerald",
-              },
-              {
-                id: "analyses",
-                label: "AI Analyses",
-                value: "\u2014",
-                desc: "Instant market insights",
-                accent: "blue",
-              },
-              {
-                id: "portfolio",
-                label: "Portfolio Value",
-                value: "\u2014",
-                desc: "Track your holdings",
-                accent: "purple",
-              },
-            ] as const
-          ).map(({ id, label, value, desc, accent }) => (
-            <article
-              key={id}
-              className={`dash-widget-card dash-widget-card--${accent}`}
-              aria-label={label}
-            >
-              <span className="dash-widget-value">{value}</span>
-              <span className="dash-widget-label">{label}</span>
-              <span className="dash-widget-desc">{desc}</span>
-            </article>
-          ))}
-        </section>
-
-        {/* Market Status Section */}
-        <MarketStatusPanel />
+        <MarketHeatmap />
+        
+        <RecentAIAnalyses />
+        <EconomicCalendar />
+        
+        <TrendingNews />
       </div>
     </div>
   );

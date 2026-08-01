@@ -3,14 +3,17 @@ import { notFound } from "next/navigation";
 import { z } from "zod";
 import { DetailsHeader } from "@/components/dashboard/DetailsHeader";
 import { CompanyProfile } from "@/components/stocks/CompanyProfile";
-import { MarketMetrics } from "@/components/stocks/MarketMetrics";
 import { NewsSection } from "@/components/stocks/NewsSection";
-import { AISummaryCard } from "@/components/stocks/AISummaryCard";
 import { StockChart } from "@/components/stocks/StockChart";
 import { ErrorCard } from "@/components/stocks/ErrorCard";
-import { TechnicalOverview } from "@/components/stocks/TechnicalOverview";
-import { PerformanceMetrics } from "@/components/stocks/PerformanceMetrics";
 import { getStockResearchBundle } from "@/services/stock-research";
+
+// New Components
+import { BentoMetrics } from "@/components/stocks/details/BentoMetrics";
+import { FinancialHealth } from "@/components/stocks/details/FinancialHealth";
+import { TechnicalIndicators } from "@/components/stocks/details/TechnicalIndicators";
+import { AIAnalysisHub } from "@/components/stocks/details/AIAnalysisHub";
+import { InteractiveAssistant } from "@/components/stocks/details/InteractiveAssistant";
 
 const ParamsSchema = z.object({
   symbol: z
@@ -50,39 +53,66 @@ export default async function StockDetailsPage({
     bundle = await getStockResearchBundle(parsed.data.symbol);
   } catch {
     return (
-      <div className="mx-auto w-full max-w-6xl">
+      <div className="mx-auto w-full max-w-7xl">
         <ErrorCard message="Failed to load market data. Please try again shortly." />
       </div>
     );
   }
 
   return (
-    <div className="mx-auto  w-full max-w-6xl space-y-4">
+    <div className="mx-auto w-full max-w-7xl space-y-6 pb-12">
       <DetailsHeader
         backHref="/dashboard/stocks"
         backLabel="Back to Stocks"
         searchHref="/dashboard/stocks"
-        searchLabel="Check another stock"
+        searchLabel="Search another stock"
       />
 
       <CompanyProfile profile={bundle.profile} fundamentals={bundle.fundamentals} />
+      
+      {bundle.metrics && (
+        <BentoMetrics 
+          metrics={bundle.metrics} 
+          marketCap={bundle.profile?.marketCapitalization ?? null} 
+        />
+      )}
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <div className="space-y-4 lg:col-span-2">
-          <MarketMetrics quote={bundle.quote} metrics={bundle.metrics} />
-          <PerformanceMetrics bars={bundle.historicalDaily} />
-          <StockChart symbol={bundle.symbol} bars={bundle.historicalDaily} />
-          <NewsSection news={bundle.news} />
+      {/* Main Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column (Charts, News, AI Hub) */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="bg-card border border-foreground/10 rounded-2xl p-6 shadow-sm">
+            <div className="h-[400px]">
+              <StockChart symbol={bundle.symbol} bars={bundle.historicalDaily} />
+            </div>
+          </div>
+          
+          {bundle.aiAnalysis && (
+            <AIAnalysisHub analysis={bundle.aiAnalysis} />
+          )}
+
+          <div className="bg-card border border-foreground/10 rounded-2xl p-6 shadow-sm">
+            <h3 className="text-xl font-bold tracking-tight mb-4">Latest News</h3>
+            <NewsSection news={bundle.news} />
+          </div>
         </div>
-        <div className="space-y-4">
-          <AISummaryCard symbol={bundle.symbol} />
-          <TechnicalOverview
-            technicals={bundle.technicals}
-            recommendations={bundle.recommendations}
+
+        {/* Right Column (Assistant, Technicals, Health) */}
+        <div className="space-y-6">
+          <InteractiveAssistant symbol={bundle.symbol} />
+          
+          <TechnicalIndicators 
+            technicals={bundle.technicals} 
+            trends={bundle.recommendations} 
           />
+          
+          {bundle.financialHealth && (
+            <FinancialHealth health={bundle.financialHealth} />
+          )}
+          
           {bundle.providerErrors.length > 0 ? (
             <div className="rounded-2xl border border-foreground/10 bg-card/40 p-4 text-sm text-muted-foreground">
-              <div className="font-medium text-foreground">Data availability</div>
+              <div className="font-medium text-foreground">Data Provider Warnings</div>
               <ul className="mt-2 list-disc space-y-1 pl-5">
                 {bundle.providerErrors.slice(0, 6).map((e, idx) => (
                   <li key={`${e.provider}-${idx}`}>
