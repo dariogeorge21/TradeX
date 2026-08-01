@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, LogOut, Newspaper, LineChart, MessageSquare, PieChart, Loader2, Bitcoin, DollarSign, Activity, ArrowRightLeft } from "lucide-react";
+import { Home, LogOut, Newspaper, LineChart, MessageSquare, PieChart, Loader2, Bitcoin, DollarSign, Activity, ArrowRightLeft, Star } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import {
@@ -35,6 +35,11 @@ const NAV_ITEMS = [
     label: "Stocks",
     href: "/dashboard/stocks",
     icon: LineChart,
+  },
+  {
+    label: "Watchlist",
+    href: "/dashboard/watchlist",
+    icon: Star,
   },
   {
     label: "Mutual Funds",

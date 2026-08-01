@@ -15,8 +15,24 @@ function DropdownMenuPortal({ ...props }: MenuPrimitive.Portal.Props) {
   return <MenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />
 }
 
-function DropdownMenuTrigger({ ...props }: MenuPrimitive.Trigger.Props) {
-  return <MenuPrimitive.Trigger data-slot="dropdown-menu-trigger" {...props} />
+function DropdownMenuTrigger({
+  asChild = false,
+  children,
+  render,
+  ...props
+}: MenuPrimitive.Trigger.Props & { asChild?: boolean }) {
+  const renderProp = render ?? (asChild && React.isValidElement(children) ? children : undefined);
+  const content = asChild && React.isValidElement(children) ? undefined : children;
+
+  return (
+    <MenuPrimitive.Trigger
+      data-slot="dropdown-menu-trigger"
+      render={renderProp}
+      {...props}
+    >
+      {content}
+    </MenuPrimitive.Trigger>
+  )
 }
 
 function DropdownMenuContent({
@@ -78,11 +94,18 @@ function DropdownMenuItem({
   className,
   inset,
   variant = "default",
+  asChild = false,
+  children,
+  render,
   ...props
 }: MenuPrimitive.Item.Props & {
   inset?: boolean
   variant?: "default" | "destructive"
+  asChild?: boolean
 }) {
+  const renderProp = render ?? (asChild && React.isValidElement(children) ? children : undefined);
+  const content = asChild && React.isValidElement(children) ? undefined : children;
+
   return (
     <MenuPrimitive.Item
       data-slot="dropdown-menu-item"
@@ -92,8 +115,11 @@ function DropdownMenuItem({
         "group/dropdown-menu-item relative flex cursor-default items-center gap-2.5 rounded-xl px-3 py-2 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-inset:pl-9.5 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-[variant=destructive]:*:[svg]:text-destructive",
         className
       )}
+      render={renderProp}
       {...props}
-    />
+    >
+      {content}
+    </MenuPrimitive.Item>
   )
 }
 

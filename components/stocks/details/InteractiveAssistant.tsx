@@ -20,21 +20,46 @@ export function InteractiveAssistant({ symbol }: { symbol: string }) {
     }
   }, [messages, isTyping]);
 
-  const handleSend = (text: string) => {
+  const handleSend = async (text: string) => {
     if (!text.trim()) return;
     
-    setMessages(prev => [...prev, { role: "user", content: text }]);
+    const newMessages = [...messages, { role: "user" as const, content: text }];
+    setMessages(newMessages);
     setInput("");
     setIsTyping(true);
     
-    // Simulate AI response
-    setTimeout(() => {
+    try {
+      const response = await fetch(`/api/stocks/${symbol}/assistant`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: newMessages }),
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch response");
+      
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error("No response body");
+
+      const decoder = new TextDecoder();
       setIsTyping(false);
-      setMessages(prev => [...prev, { 
-        role: "ai", 
-        content: `Based on my analysis of ${symbol}, that's an excellent question. The data suggests strong underlying fundamentals, though macroeconomic factors remain a headwind. For a detailed breakdown, please check the AI Synthesis section above.` 
-      }]);
-    }, 1500);
+      setMessages(prev => [...prev, { role: "ai", content: "" }]);
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        
+        const chunk = decoder.decode(value, { stream: true });
+        setMessages(prev => {
+          const newMsgs = [...prev];
+          newMsgs[newMsgs.length - 1].content += chunk;
+          return newMsgs;
+        });
+      }
+    } catch (error) {
+      console.error("AI Assistant Error:", error);
+      setIsTyping(false);
+      setMessages(prev => [...prev, { role: "ai", content: "Sorry, I encountered an error. Please try again." }]);
+    }
   };
 
   const presetPrompts = [

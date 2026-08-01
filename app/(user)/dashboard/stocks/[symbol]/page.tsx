@@ -14,6 +14,7 @@ import { FinancialHealth } from "@/components/stocks/details/FinancialHealth";
 import { TechnicalIndicators } from "@/components/stocks/details/TechnicalIndicators";
 import { AIAnalysisHub } from "@/components/stocks/details/AIAnalysisHub";
 import { InteractiveAssistant } from "@/components/stocks/details/InteractiveAssistant";
+import { WatchlistToggleButton } from "@/components/watchlist/WatchlistToggleButton";
 
 const ParamsSchema = z.object({
   symbol: z
@@ -66,6 +67,7 @@ export default async function StockDetailsPage({
         backLabel="Back to Stocks"
         searchHref="/dashboard/stocks"
         searchLabel="Search another stock"
+        action={<WatchlistToggleButton symbol={bundle.symbol} assetType="stock" showText={true} />}
       />
 
       <CompanyProfile profile={bundle.profile} fundamentals={bundle.fundamentals} />

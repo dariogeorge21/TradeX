@@ -9,6 +9,7 @@ interface DetailsHeaderProps {
   backLabel: string;
   searchHref: string;
   searchLabel: string;
+  action?: React.ReactNode;
 }
 
 export function DetailsHeader({
@@ -16,6 +17,7 @@ export function DetailsHeader({
   backLabel,
   searchHref,
   searchLabel,
+  action,
 }: DetailsHeaderProps) {
   const [loadingBack, setLoadingBack] = React.useState(false);
   const [loadingSearch, setLoadingSearch] = React.useState(false);
@@ -34,18 +36,21 @@ export function DetailsHeader({
         )}
         <span>{backLabel}</span>
       </Link>
-      <Link
-        href={searchHref}
-        onClick={() => setLoadingSearch(true)}
-        className="inline-flex items-center gap-1.5 rounded-xl border border-foreground/10 bg-card/60 px-3.5 py-2 text-xs font-semibold text-foreground hover:bg-muted transition-colors backdrop-blur"
-      >
-        {loadingSearch ? (
-          <Loader2 className="size-3.5 animate-spin text-emerald-400" />
-        ) : (
-          <Search className="size-3.5 text-emerald-400" />
-        )}
-        <span>{searchLabel}</span>
-      </Link>
+      <div className="flex items-center gap-3">
+        {action}
+        <Link
+          href={searchHref}
+          onClick={() => setLoadingSearch(true)}
+          className="inline-flex items-center gap-1.5 rounded-xl border border-foreground/10 bg-card/60 px-3.5 py-2 text-xs font-semibold text-foreground hover:bg-muted transition-colors backdrop-blur"
+        >
+          {loadingSearch ? (
+            <Loader2 className="size-3.5 animate-spin text-emerald-400" />
+          ) : (
+            <Search className="size-3.5 text-emerald-400" />
+          )}
+          <span>{searchLabel}</span>
+        </Link>
+      </div>
     </div>
   );
 }
