@@ -1,9 +1,18 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
+import type { Viewport } from "next";
 import { createClient } from "@/utils/supabase/server";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { DashboardTopBar } from "@/components/dashboard/DashboardTopBar";
+
+export const viewport: Viewport = {
+  themeColor: "#000000",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export default async function UserLayout({
   children,
