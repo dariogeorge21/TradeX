@@ -95,8 +95,8 @@ export function CurrencyCharts({ data }: CurrencyChartsProps) {
               }}
               itemStyle={{ color: "#fff", fontWeight: 500 }}
               labelStyle={{ color: "#a1a1aa", marginBottom: "0.25rem" }} // text-zinc-400
-              formatter={(value: number) => [value.toFixed(4), "Rate"]}
-              labelFormatter={(label: string) => {
+              formatter={(value: any) => [Number(value).toFixed(4), "Rate"]}
+              labelFormatter={(label: any) => {
                 const d = new Date(label);
                 return timeframe === '1D' 
                   ? d.toLocaleString() 
