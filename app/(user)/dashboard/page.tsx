@@ -34,23 +34,23 @@ export default async function DashboardPage() {
   return (
     <div className="w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 py-6 pb-24 overflow-x-hidden">
       <DashboardHero displayName={displayName} />
-      
+
       <MarketOverviewCards />
       <QuickActions />
 
       {/* Main Grid */}
+      <AIMarketBrief />
+      <DashboardWatchlist />
       <div className="dash-v2-grid">
-        <AIMarketBrief />
-        <DashboardWatchlist />
-        
+
         <PortfolioSnapshot />
         <MarketMovers />
 
         <MarketHeatmap />
-        
+
         <RecentAIAnalyses />
         <EconomicCalendar />
-        
+
         <TrendingNews />
       </div>
     </div>

@@ -56,21 +56,21 @@ export function DashboardHero({ displayName }: DashboardHeroProps) {
           <span className="hidden sm:inline-block text-white/20">•</span>
           <span className="hidden sm:inline-block">{formattedDate || "..."}</span>
         </div>
-        
+
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white">
           {getGreeting()},{" "}
-          <span className="text-gradient-premium">{displayName}</span> 👋
+          <span className="text-gradient-premium">{displayName}</span>
         </h1>
       </div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.2, duration: 0.5 }}
         className="z-10 bg-white/5 border border-white/10 backdrop-blur-xl rounded-2xl p-4 md:max-w-md w-full hover-glow-ai relative group overflow-hidden"
       >
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        
+
         <div className="flex items-start gap-3 relative z-10">
           <div className="p-2 bg-purple-500/20 rounded-lg text-purple-400">
             <Sparkles className="w-5 h-5" />
