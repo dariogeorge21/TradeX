@@ -16,7 +16,6 @@ import {
 } from "recharts";
 import { IndicatorDataPoint, MarketIndicator } from "@/types/market-indicators";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { useTheme } from "next-themes";
 
 interface IndicatorChartProps {
   indicator: MarketIndicator;
@@ -24,8 +23,6 @@ interface IndicatorChartProps {
 }
 
 export function IndicatorChart({ indicator, data }: IndicatorChartProps) {
-  const { theme } = useTheme();
-  
   const chartData = useMemo(() => {
     return data.map((d) => ({
       ...d,
@@ -33,10 +30,10 @@ export function IndicatorChart({ indicator, data }: IndicatorChartProps) {
     }));
   }, [data]);
 
-  const strokeColor = theme === "dark" ? "#8b5cf6" : "#7c3aed"; // violet-500/600
-  const secondaryColor = theme === "dark" ? "#f59e0b" : "#d97706"; // amber-500/600
-  const gridColor = theme === "dark" ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)";
-  const textColor = theme === "dark" ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.5)";
+  const strokeColor = "#8b5cf6"; // violet-500
+  const secondaryColor = "#f59e0b"; // amber-500
+  const gridColor = "hsl(var(--muted-foreground))";
+  const textColor = "hsl(var(--muted-foreground))";
 
   return (
     <Card className="col-span-1 lg:col-span-2 border-foreground/10 bg-card/60 backdrop-blur-xl shadow-lg">
