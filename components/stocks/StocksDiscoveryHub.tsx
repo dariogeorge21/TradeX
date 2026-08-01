@@ -82,7 +82,7 @@ export function StocksDiscoveryHub() {
               <category.icon className="h-5 w-5 text-primary" />
               {category.title}
             </span>
-          } as any>
+          }>
             {loading ? renderSkeletons() : categorySymbols.map((symbol) => {
               const data = stocks[symbol];
               if (!data) return null;
