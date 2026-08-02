@@ -8,7 +8,12 @@ import {
   LineChart,
   Sparkles,
   Eye,
-  FileText
+  FileText,
+  Bitcoin,
+  DollarSign,
+  PieChart,
+  ArrowRightLeft,
+  Newspaper,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -17,9 +22,14 @@ const actions = [
   { icon: GitCompare, label: "Compare", color: "text-orange-400", bg: "bg-orange-500/10", href: "/dashboard/compare" },
   { icon: Briefcase, label: "Portfolio AI", color: "text-purple-400", bg: "bg-purple-500/10", href: "/dashboard/portfolio" },
   { icon: LineChart, label: "Screener", color: "text-emerald-400", bg: "bg-emerald-500/10", href: "/dashboard/screener" },
-  { icon: Sparkles, label: "Ask AI", color: "text-fuchsia-400", bg: "bg-fuchsia-500/10", href: "/dashboard/chatbot" },
   { icon: Eye, label: "Watchlist", color: "text-amber-400", bg: "bg-amber-500/10", href: "/dashboard/watchlist" },
-  { icon: FileText, label: "Research", color: "text-sky-400", bg: "bg-sky-500/10", href: "/dashboard/research" },
+  { icon: FileText, label: "Research", color: "text-sky-400", bg: "bg-sky-500/10", href: "/dashboard/chatbot" },
+  { icon: Bitcoin, label: "Crypto", color: "text-fuchsia-400", bg: "bg-fuchsia-500/10", href: "/dashboard/crypto" },
+  { icon: DollarSign, label: "Forex", color: "text-fuchsia-400", bg: "bg-fuchsia-500/10", href: "/dashboard/forex" },
+  { icon: PieChart, label: "Mutual Funds", color: "text-fuchsia-400", bg: "bg-fuchsia-500/10", href: "/dashboard/mutual-funds" },
+  { icon: LineChart, label: "Market Indexes", color: "text-fuchsia-400", bg: "bg-fuchsia-500/10", href: "/dashboard/market-indexes" },
+  { icon: ArrowRightLeft, label: "Money Exchange", color: "text-fuchsia-400", bg: "bg-fuchsia-500/10", href: "/dashboard/money-exchange" },
+  { icon: Newspaper, label: "News", color: "text-fuchsia-400", bg: "bg-fuchsia-500/10", href: "/dashboard/news" },
 ];
 
 const container: Variants = {

@@ -73,12 +73,10 @@ export function DashboardHero({ displayName }: DashboardHeroProps) {
 
         <div className="flex items-start gap-3 relative z-10">
           <div className="p-2 bg-purple-500/20 rounded-lg text-purple-400">
-            <Sparkles className="w-5 h-5" />
           </div>
           <div className="flex-1">
             <h3 className="text-sm font-semibold text-white mb-1 flex items-center justify-between">
               AI Morning Brief
-              <span className="text-[10px] uppercase tracking-wider text-purple-400 font-bold bg-purple-500/10 px-2 py-0.5 rounded">Live</span>
             </h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Tesla earnings are expected today. Bitcoin is up <span className="text-emerald-400 font-medium">3.1%</span>. NVIDIA continues strong momentum. Two companies in your watchlist have unusual volume.

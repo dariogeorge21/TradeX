@@ -15,7 +15,7 @@ const portfolioStats = {
 
 export function PortfolioSnapshot() {
   return (
-    <section className="col-span-12 lg:col-span-8 flex flex-col gap-4">
+    <section className="col-span-12 lg:col-span-8 flex flex-col gap-4 my-8">
       <div className="flex items-center gap-2 mb-1">
         <Wallet className="w-5 h-5 text-blue-400" />
         <h2 className="text-lg font-semibold text-white tracking-tight">Portfolio Snapshot</h2>
@@ -23,7 +23,7 @@ export function PortfolioSnapshot() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Main Value Card */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="dash-v2-card p-6 flex flex-col justify-between bg-gradient-to-br from-blue-500/10 to-transparent group"
@@ -46,7 +46,7 @@ export function PortfolioSnapshot() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-4">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
@@ -59,7 +59,7 @@ export function PortfolioSnapshot() {
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -72,7 +72,7 @@ export function PortfolioSnapshot() {
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
@@ -84,7 +84,7 @@ export function PortfolioSnapshot() {
             <span className="font-bold text-white text-sm">{portfolioStats.diversification}</span>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
