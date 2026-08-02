@@ -13,7 +13,7 @@ import { RemoveDialog } from "@/components/watchlist/RemoveDialog";
 import { removeFromWatchlist } from "@/app/actions/watchlist";
 import { removeMutualFundFromWatchlist } from "@/app/actions/mutual-funds-watchlist";
 import { toast } from "sonner";
-import { AISummaryModal } from "@/components/watchlist/AISummaryModal";
+import { AISummarySection } from "@/components/watchlist/AISummarySection";
 
 interface WatchlistViewProps {
   initialItems: WatchlistItem[];
@@ -30,7 +30,7 @@ export function WatchlistView({ initialItems, stats }: WatchlistViewProps) {
 
   const [itemToRemove, setItemToRemove] = useState<string | null>(null);
   const [isRemoving, setIsRemoving] = useState(false);
-  const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+  const [isAISummaryOpen, setIsAISummaryOpen] = useState(false);
 
   const filteredItems = useMemo(() => {
     let result = [...items];
@@ -119,9 +119,15 @@ export function WatchlistView({ initialItems, stats }: WatchlistViewProps) {
         <WatchlistToolbar 
           layout={layout} 
           onLayoutChange={setLayout} 
-          onGenerateAISummary={() => setIsAIModalOpen(true)}
+          onGenerateAISummary={() => setIsAISummaryOpen(true)}
           isGeneratingAI={false}
           selectedCount={0}
+        />
+        
+        <AISummarySection 
+          isOpen={isAISummaryOpen} 
+          onClose={() => setIsAISummaryOpen(false)} 
+          watchlist={items} 
         />
         
         {filteredItems.length === 0 ? (
@@ -142,14 +148,6 @@ export function WatchlistView({ initialItems, stats }: WatchlistViewProps) {
         isRemoving={isRemoving}
         symbol={itemToRemove || ""}
       />
-
-      {isAIModalOpen && (
-        <AISummaryModal 
-          isOpen={isAIModalOpen} 
-          onClose={() => setIsAIModalOpen(false)} 
-          watchlist={items} 
-        />
-      )}
     </div>
   );
 }
