@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, LogOut, Newspaper, LineChart, MessageSquare, PieChart, Loader2, Bitcoin, DollarSign, Activity, ArrowRightLeft, Star } from "lucide-react";
+import { Home, LogOut, Newspaper, LineChart, MessageSquare, PieChart, Loader2, Bitcoin, DollarSign, Activity, ArrowRightLeft, Star, Filter } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import {
@@ -30,6 +30,11 @@ const NAV_ITEMS = [
     label: "Home",
     href: "/dashboard",
     icon: Home,
+  },
+  {
+    label: "Screener",
+    href: "/dashboard/screener",
+    icon: Filter,
   },
   {
     label: "Stocks",
