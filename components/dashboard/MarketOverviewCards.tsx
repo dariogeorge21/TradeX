@@ -39,46 +39,56 @@ export function MarketOverviewCards() {
   return (
     <section className="mb-8" aria-label="Market Overview">
       <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4 px-1">Market Overview</h2>
-      <div className="flex overflow-x-auto pb-4 -mt-2 px-1 gap-4 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-white/10">
-        {markets.map((market, i) => (
-          <motion.div
-            key={market.name}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: i * 0.05 }}
-            whileHover={{ y: -4 }}
-            className="dash-v2-card snap-start shrink-0 p-4 w-[200px] flex flex-col justify-between group cursor-default"
-          >
-            <div className="flex justify-between items-start mb-4">
-              <span className="text-sm font-medium text-white/80 group-hover:text-white transition-colors">{market.name}</span>
-              {market.isPositive ? (
-                <TrendingUp className="w-4 h-4 text-emerald-500/70 group-hover:text-emerald-400 transition-colors" />
-              ) : (
-                <TrendingDown className="w-4 h-4 text-red-500/70 group-hover:text-red-400 transition-colors" />
-              )}
-            </div>
-            
-            <div className="h-10 w-full mb-3 opacity-60 group-hover:opacity-100 transition-opacity">
-              <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full overflow-visible">
-                <path 
-                  d={sparklines[i]} 
-                  fill="none" 
-                  stroke={market.isPositive ? "#10b981" : "#ef4444"} 
-                  strokeWidth="2.5" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
+      <div className="relative overflow-hidden pb-4 -mt-2 px-1">
+        <motion.div 
+          className="flex w-max"
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{ repeat: Infinity, ease: "linear", duration: 30 }}
+        >
+          {[0, 1].map((setIndex) => (
+            <div key={setIndex} className="flex gap-4 pr-4">
+              {markets.map((market, i) => (
+                <motion.div
+                  key={`${market.name}-${setIndex}`}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: i * 0.05 }}
+                  whileHover={{ y: -4 }}
+                  className="dash-v2-card shrink-0 p-4 w-[200px] flex flex-col justify-between group cursor-default"
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="text-sm font-medium text-white/80 group-hover:text-white transition-colors">{market.name}</span>
+                    {market.isPositive ? (
+                      <TrendingUp className="w-4 h-4 text-emerald-500/70 group-hover:text-emerald-400 transition-colors" />
+                    ) : (
+                      <TrendingDown className="w-4 h-4 text-red-500/70 group-hover:text-red-400 transition-colors" />
+                    )}
+                  </div>
+                  
+                  <div className="h-10 w-full mb-3 opacity-60 group-hover:opacity-100 transition-opacity">
+                    <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full overflow-visible">
+                      <path 
+                        d={sparklines[i]} 
+                        fill="none" 
+                        stroke={market.isPositive ? "#10b981" : "#ef4444"} 
+                        strokeWidth="2.5" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
 
-            <div className="flex items-baseline justify-between">
-              <span className="text-lg font-bold text-white tracking-tight">{market.value}</span>
-              <span className={`text-xs font-semibold px-2 py-0.5 rounded ${market.isPositive ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
-                {market.change}
-              </span>
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-lg font-bold text-white tracking-tight">{market.value}</span>
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded ${market.isPositive ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
+                      {market.change}
+                    </span>
+                  </div>
+                </motion.div>
+              ))}
             </div>
-          </motion.div>
-        ))}
+          ))}
+        </motion.div>
       </div>
     </section>
   );
